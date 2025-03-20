@@ -10,12 +10,15 @@ import { object, string } from "yup";
 import { useFormik, validationSchema } from "formik";
 import {
   FormControl,
+  IconButton,
   InputLabel,
   MenuItem,
   Paper,
   Select,
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
 
 function Category(props) {
   const [open, setOpen] = React.useState(false);
@@ -60,9 +63,27 @@ function Category(props) {
 
   const { handleSubmit, handleBlur, handleChange, values, errors, touched } =
     formikcat;
+
+    const handleDelete = (id) => {
+      console.log(id);
+      
+    }
   const columns = [
     { field: "Category", headerName: "Category", width: 130 },
     { field: "Descripition", headerName: "Descripition", width: 130 },
+    {
+      headerName: "Action",
+      renderCell: (param) => (
+        <>
+          <IconButton aria-label="edit">
+            <EditIcon />
+          </IconButton>
+          <IconButton aria-label="delete" onClick={handleDelete(param.row.id)}>
+            <DeleteIcon />
+          </IconButton>
+        </>
+      ),
+    },
   ];
 
   const [data, setData] = useState([]);
@@ -78,6 +99,8 @@ function Category(props) {
   useEffect(() => {
     getData();
   }, []);
+
+
 
   return (
     <React.Fragment>
