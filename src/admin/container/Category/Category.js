@@ -22,6 +22,8 @@ import EditIcon from '@mui/icons-material/Edit';
 
 function Category(props) {
   const [open, setOpen] = React.useState(false);
+  const [update, setUpdate] = useState(false);
+  const [data, setData] = useState([]);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -29,6 +31,8 @@ function Category(props) {
 
   const handleClose = () => {
     setOpen(false);
+    setUpdate(false);
+    resetForm();
   };
 
   const categoryyup = object({
@@ -43,42 +47,58 @@ function Category(props) {
     },
     validationSchema: categoryyup,
     onSubmit: (values, { resetForm }) => {
-      let obj = { ...values, id: Math.floor(Math.random() * 10000) };
-      console.log(obj);
+
 
       const localdata = JSON.parse(localStorage.getItem("category"));
 
-      if (localdata) {
-        localdata.push(obj);
+
+      if (update) {
+        let index = localdata.findIndex((v) => v.id === values.id);
+        console.log(index);
+        localdata[index] = values;
         localStorage.setItem("category", JSON.stringify(localdata));
       } else {
-        localStorage.setItem("category", JSON.stringify([obj]));
+        let obj = { ...values, id: Math.floor(Math.random() * 10000) };
+        if (localdata) {
+          localdata.push(obj);
+          localStorage.setItem("category", JSON.stringify(localdata));
+        } else {
+          localStorage.setItem("category", JSON.stringify([obj]));
+        }
       }
-
       getData();
       handleClose();
       resetForm();
     },
   });
 
-  const { handleSubmit, handleBlur, handleChange, values, errors, touched } =
-    formikcat;
+  const { handleSubmit, handleBlur, handleChange, values, errors, touched, setValues, resetForm } = formikcat;
 
-    const handleDelete = (id) => {
-      console.log(id);
-      
-    }
+  const handleDelete = (id) => {
+    console.log(id);
+    const localdata = data.filter((v) => v.id !== id);
+    localStorage.setItem("category", JSON.stringify(localdata));
+    getData();
+    handleClose();
+  }
+
+  const handleEdit = (data) => {
+    console.log(data);
+    setValues(data)
+    handleClickOpen();
+    setUpdate(true);
+  }
   const columns = [
     { field: "Category", headerName: "Category", width: 130 },
     { field: "Descripition", headerName: "Descripition", width: 130 },
     {
       headerName: "Action",
-      renderCell: (param) => (
+      renderCell: (params) => (
         <>
-          <IconButton aria-label="edit">
+          <IconButton aria-label="edit" onClick={() => handleEdit(params.row)}>
             <EditIcon />
           </IconButton>
-          <IconButton aria-label="delete" onClick={handleDelete(param.row.id)}>
+          <IconButton aria-label="delete" onClick={() => handleDelete(params.row.id)}>
             <DeleteIcon />
           </IconButton>
         </>
@@ -86,7 +106,7 @@ function Category(props) {
     },
   ];
 
-  const [data, setData] = useState([]);
+
 
   const getData = () => {
     const localdata = JSON.parse(localStorage.getItem("category"));
@@ -121,6 +141,7 @@ function Category(props) {
               type="text"
               fullWidth
               variant="standard"
+              value={values.Category}
               onChange={handleChange}
               onBlur={handleBlur}
               error={touched.Category && errors.Category}
@@ -136,6 +157,7 @@ function Category(props) {
               type="text"
               fullWidth
               variant="standard"
+              value={values.Descripition}
               onChange={handleChange}
               onBlur={handleBlur}
               error={touched.Descripition && errors.Descripition}
@@ -148,7 +170,7 @@ function Category(props) {
           </DialogContent>
           <DialogActions>
             <Button onClick={handleClose}>Cancel</Button>
-            <Button type="submit">Submit</Button>
+            <Button type="submit">{update ? 'Update' : 'Submit'}</Button>
           </DialogActions>
         </form>
       </Dialog>

@@ -1,9 +1,14 @@
+import { Category } from "@mui/icons-material";
 import {
   Button,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
   TextField,
 } from "@mui/material";
 import { useFormik } from "formik";
@@ -66,6 +71,21 @@ function Subcategory(props) {
         <DialogTitle>Sub Category</DialogTitle>
 
         <form onSubmit={handleSubmit}>
+          <FormControl sx={{m: 2, minWidth:120}} size="small">
+            <InputLabel id="demo-simple-select-label">Category</InputLabel>
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              value={values.Category}
+              label="Category Name"
+              onChange={handleChange}
+              onBlur={handleBlur}
+            >
+              <MenuItem value={1}>{values.Category}</MenuItem>
+        
+        
+            </Select>
+          </FormControl>
           <DialogContent>
             <TextField
               margin="dense"
@@ -84,7 +104,7 @@ function Subcategory(props) {
                   : ""
               }
             />
-             <TextField
+            <TextField
               margin="dense"
               id="sub dec"
               name="Descripition"
