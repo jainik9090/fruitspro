@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import Dialog from "@mui/material/Dialog";
@@ -8,12 +8,16 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { object, string } from "yup";
 import { useFormik, validationSchema } from "formik";
-import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
+import { FormControl, InputLabel, MenuItem, Paper, Select } from "@mui/material";
+import DeleteIcon from '@mui/icons-material/Delete';
+import IconButton from '@mui/material/IconButton';
+import { DataGrid } from '@mui/x-data-grid';
+import EditIcon from '@mui/icons-material/Edit';
 
 function Category(props) {
   const [open, setOpen] = React.useState(false);
 
-  
+
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -34,24 +38,68 @@ function Category(props) {
       Descripition: "",
     },
     validationSchema: categoryyup,
-    onSubmit: (values) => {
+    onSubmit: (values, { resetForm }) => {
+
       console.log(values);
+
+      let obj = { ...values, id: Math.floor(Math.random() * 1000) }
+      console.log(obj);
+
+      const localdata = JSON.parse(localStorage.getItem("category"));
+
+      if (localdata) {
+        localdata.push(obj);
+        localStorage.setItem("category", JSON.stringify(localdata));
+      } else {
+        localStorage.setItem("category", JSON.stringify([obj]));
+      }
+      getData();
+      handleClose();
+      resetForm();
     },
   });
+
+
 
   const { handleSubmit, handleBlur, handleChange, values, errors, touched } =
     formikcat;
 
   console.log(values);
   const columns = [
-    { field: 'name', headerName: 'Name', width: 130 },
-    { field: 'lastName', headerName: 'Last name', width: 130 },
-    
+    { field: 'Category', headerName: 'Category', width: 130 },
+    { field: 'Description', headerName: 'Description', width: 130 },
+    {
+      headerName: "Action",
+      renderCell: () => (
+        <>
+          <IconButton aria-label="edit">
+            <EditIcon />
+          </IconButton>
+          <IconButton aria-label="delete">
+            <DeleteIcon />
+          </IconButton>
+        </>
+      )
+    }
+
   ];
-  
-  
+
+  const [data, setData] = useState([]);
+
+  const getData = () => {
+    const localdata = JSON.parse(localStorage.getItem("category"));
+    console.log(localdata);
+
+    setData(localdata);
+
+  }
+
   const paginationModel = { page: 0, pageSize: 5 };
-  
+
+  useEffect(() => {
+    getData();
+  }, []);
+
 
   return (
     <React.Fragment>
@@ -62,22 +110,9 @@ function Category(props) {
       <Dialog
         open={open}
         onClose={handleClose}
-        slotProps={{
-          paper: {
-            component: "form",
-            onSubmit: (event) => {
-              event.preventDefault();
-              const formData = new FormData(event.currentTarget);
-              const formJson = Object.fromEntries(formData.entries());
-              const email = formJson.email;
-              console.log(email);
-              handleClose();
-            },
-          },
-        }}
       >
         <DialogTitle>Category</DialogTitle>
-      
+
         <form onSubmit={handleSubmit}>
           <DialogContent>
             <TextField
@@ -118,7 +153,19 @@ function Category(props) {
             <Button type="submit">Submit</Button>
           </DialogActions>
         </form>
+
+       
       </Dialog>
+      <Paper sx={{ height: 400, width: '100%' }}>
+          <DataGrid
+            rows={data}
+            columns={columns}
+            initialState={{ pagination: { paginationModel } }}
+            pageSizeOptions={[5, 10]}
+            checkboxSelection
+            sx={{ border: 0 }}
+          />
+        </Paper>
     </React.Fragment>
   );
 }
