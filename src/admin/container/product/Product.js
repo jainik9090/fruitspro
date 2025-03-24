@@ -33,8 +33,7 @@ function Product(props) {
         const catedata = JSON.parse(localStorage.getItem("category"))
         setCategory(catedata);
 
-        const subdata = JSON.parse(localStorage.getItem("subcategory"))
-        setSubCategory(subdata);
+ 
     }
 
 
@@ -77,8 +76,17 @@ function Product(props) {
             }
         }
     })
+    
+    const { handleSubmit, handleBlur, handleChange, values, errors, touched, resetForm, setFieldValue} = formikpdata;
 
-    const { handleSubmit, handleBlur, handleChange, values, errors, touched, resetForm } = formikpdata
+    const handlecatedata = (t) => {
+        console.log(t);
+        
+        const subdata = JSON.parse(localStorage.getItem("subcategory"))
+        const sdata = subdata.filter((v) => v.Category === t)
+        setSubCategory(sdata)
+    }
+    
 
     return (
         <React.Fragment>
@@ -100,7 +108,10 @@ function Product(props) {
                                     name: 'Category',
                                     id: 'uncontrolled-native',
                                 }}
-                                onChange={handleChange}
+                                onChange={(e) => {
+                                    handlecatedata(e.target.value);
+                                    setFieldValue("Category" ,e.target.value)
+                                }}
                                 onBlur={handleBlur}
                                 value={values.Category}
                             >
@@ -125,7 +136,7 @@ function Product(props) {
                                 onBlur={handleBlur}
                                 value={values.SubCategory}
                             >
-                                <option value="">--Select Category--</option>
+                                <option value="">--Select Sub Category--</option>
                                 {
                                     subcategory?.map((v) => (
                                         <option value={v.id}>{v.SubCategory}</option>
@@ -135,8 +146,6 @@ function Product(props) {
                             <FormHelperText>{touched.SubCategory && errors.SubCategory ? errors.Category : ""}</FormHelperText>
                         </FormControl>
                         <TextField
-                            autoFocus
-                            required
                             margin="dense"
                             id="name"
                             name="pname"
@@ -150,9 +159,7 @@ function Product(props) {
                             error={touched.pname && errors.pname}
                         />
                         {touched.pname && errors.pname ? errors.pname : ""}
-                        <TextField
-                            autoFocus
-                            required
+                        <TextField                           
                             margin="dense"
                             id="price"
                             name="price"
@@ -164,12 +171,11 @@ function Product(props) {
                             onChange={handleChange}
                             onBlur={handleBlur}
                             error={touched.price && errors.price}
+                            helperText= {touched.price && errors.price ? errors.price : ""}
                         />
-                        {touched.price && errors.price ? errors.price : ""}
+                       
 
                         <TextField
-                            autoFocus
-                            required
                             margin="dense"
                             id="pDescripition"
                             name="pDescripition"
@@ -181,8 +187,9 @@ function Product(props) {
                             onChange={handleChange}
                             onBlur={handleBlur}
                             error={touched.pDescripition && errors.pDescripition}
+                            helperText={touched.pDescripition && errors.pDescripition ? errors.pDescripition : ""}
                         />
-                        {touched.pDescripition && errors.pDescripition ? errors.pDescripition : ""}
+                        
 
                     </DialogContent>
                     <DialogActions>
@@ -196,3 +203,4 @@ function Product(props) {
 }
 
 export default Product;
+

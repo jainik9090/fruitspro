@@ -117,7 +117,7 @@ export default function Layout( {children} ) {
   const indexcet = [
     {icon:<CategoryIcon />, label:"catagory" , to:'/admin/category/' },
     {icon:<AppRegistrationIcon />, label:"subcatagory" , to:'/admin/subcategory/' },
-    {icon:<BackupTableIcon />, label:"produt" , to:'/admin/catagory/' }
+    {icon:<BackupTableIcon />, label:"produt" , to:'/admin/product/' }
   ]
 
   return (
