@@ -32,7 +32,7 @@ function Subcategory(props) {
     getData();
   }, []);
 
-  
+
 
 
   const handleClickOpen = () => {
@@ -57,32 +57,32 @@ function Subcategory(props) {
       Descripition: "",
     },
     validationSchema: Subcategoryyup,
-    onSubmit: (values, {resetForm}) => {
-      
+    onSubmit: (values, { resetForm }) => {
+
       const subdata = JSON.parse(localStorage.getItem("subcategory"))
 
-     if (update) {
-      let index = subdata.findIndex((v) => v.id === values.id);
-      console.log(index);
-      subdata[index] = values;
-      localStorage.setItem("subcategory", JSON.stringify(subdata));
-     } else {
-      let obj = {...values, id:Math.floor(Math.random() *10000)};
-      if (subdata) {
-        subdata.push(obj);
-          localStorage.setItem("subcategory", JSON.stringify(subdata));
+      if (update) {
+        let index = subdata.findIndex((v) => v.id === values.id);
+        console.log(index);
+        subdata[index] = values;
+        localStorage.setItem("subcategory", JSON.stringify(subdata));
       } else {
-        localStorage.setItem("subcategory", JSON.stringify([obj]));
+        let obj = { ...values, id: Math.floor(Math.random() * 10000) };
+        if (subdata) {
+          subdata.push(obj);
+          localStorage.setItem("subcategory", JSON.stringify(subdata));
+        } else {
+          localStorage.setItem("subcategory", JSON.stringify([obj]));
+        }
       }
-     }
 
       getData();
       handleClose();
       resetForm();
-    
+
     },
   });
-  const { handleSubmit, handleBlur, handleChange, values, errors, touched ,resetForm, setValues} =
+  const { handleSubmit, handleBlur, handleChange, values, errors, touched, resetForm, setValues } =
     formikcat;
 
   console.log(values);
@@ -104,7 +104,17 @@ function Subcategory(props) {
   }
 
   const columns = [
-    { field: "Category", headerName: "Category", width: 70 },
+    {
+      field: "Category",
+      headerName: "Category",
+      width: 270,
+      renderCell: (params) => {
+      console.log(params.row.Category,data);
+      const catdata = data.find(v => v.id  == params.row.Category)
+      console.log(catdata.Category);
+      return catdata.Category
+      }  
+    },
     { field: "SubCategory", headerName: "SubCategory", width: 130 },
     { field: "Descripition", headerName: "Descripition", width: 130 },
     {
@@ -132,7 +142,7 @@ function Subcategory(props) {
   }
   const paginationModel = { page: 0, pageSize: 5 };
 
-  
+
 
   return (
     <React.Fragment>
@@ -147,7 +157,7 @@ function Subcategory(props) {
         <DialogTitle>Sub Category</DialogTitle>
 
         <form onSubmit={handleSubmit}>
-           <FormControl sx={{ m: 3, minWidth: 120 }} error={touched.Category && errors.Category}>
+          <FormControl sx={{ m: 3, minWidth: 120 }} error={touched.Category && errors.Category}>
             <NativeSelect
               defaultValue={30}
               inputProps={{
@@ -165,7 +175,7 @@ function Subcategory(props) {
                 ))
               }
             </NativeSelect>
-            <FormHelperText>{ touched.Category && errors.Category? errors.Category:""}</FormHelperText>
+            <FormHelperText>{touched.Category && errors.Category ? errors.Category : ""}</FormHelperText>
           </FormControl>
           <DialogContent>
             <TextField

@@ -10,13 +10,16 @@ import { number, object, string } from 'yup';
 import { useFormik } from 'formik';
 import FormControl from '@mui/material/FormControl';
 import NativeSelect from '@mui/material/NativeSelect';
-import { FormHelperText } from '@mui/material';
+import { FormHelperText, IconButton, Paper } from '@mui/material';
+import { DataGrid } from '@mui/x-data-grid';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
 
 
 function Product(props) {
     const [open, setOpen] = React.useState(false);
     const [product, setProduct] = React.useState({});
-    const [update, setUpdate] = React.useState([]);
+    const [update, setUpdate] = React.useState(false);
     const [category, setCategory] = React.useState([]);
     const [subcategory, setSubCategory] = React.useState([]);
 
@@ -32,8 +35,6 @@ function Product(props) {
 
         const catedata = JSON.parse(localStorage.getItem("category"))
         setCategory(catedata);
-
- 
     }
 
 
@@ -67,6 +68,14 @@ function Product(props) {
 
             const prodata = JSON.parse(localStorage.getItem("product"))
 
+          if (update) {
+            let index = prodata.findIndex((v) => v.id === values.id);
+            console.log(index);
+            prodata[index]=values;
+            localStorage.setItem("product", JSON.stringify(prodata));
+            
+            
+          } else {
             let obj = { ...values, id: Math.floor(Math.random() * 1000) };
             if (prodata) {
                 prodata.push(obj);
@@ -74,19 +83,78 @@ function Product(props) {
             } else {
                 localStorage.setItem("product", JSON.stringify([obj]));
             }
+          }
+          getData();
+          handleClose();
+          resetForm();
         }
     })
-    
-    const { handleSubmit, handleBlur, handleChange, values, errors, touched, resetForm, setFieldValue} = formikpdata;
+
+    const { handleSubmit, handleBlur, handleChange, values, errors, touched, resetForm, setFieldValue, setValues } = formikpdata;
 
     const handlecatedata = (t) => {
         console.log(t);
-        
         const subdata = JSON.parse(localStorage.getItem("subcategory"))
         const sdata = subdata.filter((v) => v.Category === t)
         setSubCategory(sdata)
     }
-    
+
+
+    const columns = [
+        { field: "Category", headerName: "Category", width: 120 ,
+            renderCell: (params) => {
+                console.log(params.row.Category ,category);
+                const catdat = category.find(v => v.id == params.row.Category)
+                console.log(catdat.Category);
+                return catdat.Category
+            }
+        },
+        { field: "SubCategory", headerName: "SubCategory", width: 130, 
+            renderCell: (params) => {
+                const subdata = JSON.parse(localStorage.getItem("subcategory"))
+                console.log(params.row.SubCategory,subdata);
+                const catdat = subdata.find(v => v.id == params.row.SubCategory)
+                console.log(catdat.SubCategory);
+                return catdat.SubCategory
+                
+            }
+        },
+        { field: "pname", headerName: "pname", width: 130 },
+        { field: "price", headerName: "price", width: 130 },
+        { field: "pDescripition", headerName: "pDescripition", width: 130 },
+        {
+            headerName: "Action",
+            renderCell: (params) => (
+                <>
+                    <IconButton aria-label="edit" onClick={() => handleEdit(params.row)}>
+                        <EditIcon />
+                    </IconButton>
+                    <IconButton aria-label="delete" onClick={() => handleDelete(params.row.id)}>
+                        <DeleteIcon />
+                    </IconButton>
+                </>
+            ),
+        },
+    ];
+
+    const handleDelete = (id) => {
+        console.log(id);
+        const prodata = product.filter((v) => v.id !== id);
+        localStorage.setItem("product", JSON.stringify(prodata));
+        getData();
+        handleClose();
+
+    }
+    const handleEdit = (product) => {
+        console.log(product);
+        setValues(product);
+        handleClickOpen();
+        handlecatedata(product.Category);
+        setUpdate(true);
+        
+    }
+
+    const paginationModel = { page: 0, pageSize: 5 };
 
     return (
         <React.Fragment>
@@ -110,7 +178,7 @@ function Product(props) {
                                 }}
                                 onChange={(e) => {
                                     handlecatedata(e.target.value);
-                                    setFieldValue("Category" ,e.target.value)
+                                    setFieldValue("Category", e.target.value)
                                 }}
                                 onBlur={handleBlur}
                                 value={values.Category}
@@ -159,7 +227,7 @@ function Product(props) {
                             error={touched.pname && errors.pname}
                         />
                         {touched.pname && errors.pname ? errors.pname : ""}
-                        <TextField                           
+                        <TextField
                             margin="dense"
                             id="price"
                             name="price"
@@ -171,9 +239,9 @@ function Product(props) {
                             onChange={handleChange}
                             onBlur={handleBlur}
                             error={touched.price && errors.price}
-                            helperText= {touched.price && errors.price ? errors.price : ""}
+                            helperText={touched.price && errors.price ? errors.price : ""}
                         />
-                       
+
 
                         <TextField
                             margin="dense"
@@ -189,15 +257,25 @@ function Product(props) {
                             error={touched.pDescripition && errors.pDescripition}
                             helperText={touched.pDescripition && errors.pDescripition ? errors.pDescripition : ""}
                         />
-                        
+
 
                     </DialogContent>
                     <DialogActions>
                         <Button onClick={handleClose}>Cancel</Button>
-                        <Button type="submit">Submit</Button>
+                        <Button type="submit">{update ? "Update" : "Submit"}</Button>
                     </DialogActions>
                 </form>
             </Dialog>
+            <Paper sx={{ height: 400, width: "100%" }}>
+                <DataGrid
+                    rows={product}
+                    columns={columns}
+                    initialState={{ pagination: { paginationModel } }}
+                    pageSizeOptions={[5, 10]}
+                    checkboxSelection
+                    sx={{ border: 0 }}
+                />
+            </Paper>
         </React.Fragment>
     );
 }
