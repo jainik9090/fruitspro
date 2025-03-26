@@ -111,7 +111,8 @@ function Subcategory(props) {
       renderCell: (params) => {
       console.log(params.row.Category,data);
       const catdata = data.find(v => v.id  == params.row.Category)
-      console.log(catdata.Category);
+      console.log(catdata);
+      
       return catdata.Category
       }  
     },
