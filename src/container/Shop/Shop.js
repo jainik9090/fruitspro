@@ -6,29 +6,57 @@ import CircularProgress from '@mui/material/CircularProgress';
 function Shop(props) {
   const [products, setProducts] = useState([]);
   const [search, setSearch] = useState('');
-
-
-  const handlefilter = () => {
-
-    const fdata = products.filter((v) =>
-      v.pname.toLowerCase().includes(search.toLowerCase()) ||
-      v.Category.toLowerCase().includes(search.toLowerCase()) 
-    )
-  }
-  const Finaldata = handlefilter();
-
-  const handleall = () => {
-    setProducts();
-  }
+  const [sort, setSort] = useState('');
+  const [category, setCategory] = useState([]);
 
   const getData = () => {
     const localData = JSON.parse(localStorage.getItem("product"))
     setProducts(localData);
+
+    const catedata = JSON.parse(localStorage.getItem("category"))
+    setCategory(catedata);
+
+    const UniqueData = []
+    setProducts(localData);
+    localData.map((v, i) => {
+      let x = catedata.find((v1) => v1.id == v.Category)
+
+      if (!UniqueData.some((v2)=> v2.id === v.Category)) {
+        UniqueData.push(x);
+      }
+    })
+
+    setCategory(UniqueData)
   }
 
   useEffect(() => {
     getData();
   }, [])
+
+  const handleFilter = () => {
+    const fdata = products.filter((v) =>
+      v.pname.toLowerCase().includes(search.toLowerCase()) ||
+      v.pDescripition.toLowerCase().includes(search.toLowerCase()) ||
+      v.price.toLowerCase().includes(search.toLowerCase())
+
+    )
+    const sData = fdata.sort((a, b) => {
+      if (sort === "az") {
+        return a.pname.localeCompare(b.pname);
+      } else if (sort === "za") {
+        return b.pname.localeCompare(a.pname);
+      } else if (sort === "lh") {
+        return a.price - b.price
+      } else if (sort === "hl") {
+        return b.price - a.price
+      }
+    })
+    return sData;
+  }
+
+  
+  const Finaldata = handleFilter();
+
 
   return (
     products.length > 0 ?
@@ -61,8 +89,10 @@ function Shop(props) {
                         className="form-control p-3"
                         placeholder="keywords"
                         aria-describedby="search-icon-1"
+                        value={search}
                         onChange={(e) => setSearch(e.target.value)}
                       />
+
                       <span id="search-icon-1" className="input-group-text p-3">
                         <i className="fa fa-search" />
                       </span>
@@ -77,11 +107,13 @@ function Shop(props) {
                         name="fruitlist"
                         className="border-0 form-select-sm bg-light me-3"
                         form="fruitform"
+                        onChange={(e) => setSort(e.target.value)}
                       >
-                        <option value="volvo">Nothing</option>
-                        <option value="saab">Popularity</option>
-                        <option value="opel">Organic</option>
-                        <option value="audi">Fantastic</option>
+                        <option value="0">--Select Product--</option>
+                        <option value="az">Title: A-Z</option>
+                        <option value="za">Title: Z-A</option>
+                        <option value="hl">Prices: High-Low</option>
+                        <option value="lh">Prices: Low-High</option>
                       </select>
                     </div>
                   </div>
@@ -93,51 +125,19 @@ function Shop(props) {
                         <div className="mb-3">
                           <h4>Categories</h4>
                           <ul className="list-unstyled fruite-categorie">
-                            <li>
-                              <div className="d-flex justify-content-between fruite-name">
-                                <a href="#">
-                                  <i className="fas fa-apple-alt me-2" />
-                                  Apples
-                                </a>
-                                <span>(3)</span>
-                              </div>
-                            </li>
-                            <li>
-                              <div className="d-flex justify-content-between fruite-name">
-                                <a href="#">
-                                  <i className="fas fa-apple-alt me-2" />
-                                  Oranges
-                                </a>
-                                <span>(5)</span>
-                              </div>
-                            </li>
-                            <li>
-                              <div className="d-flex justify-content-between fruite-name">
-                                <a href="#">
-                                  <i className="fas fa-apple-alt me-2" />
-                                  Strawbery
-                                </a>
-                                <span>(2)</span>
-                              </div>
-                            </li>
-                            <li>
-                              <div className="d-flex justify-content-between fruite-name">
-                                <a href="#">
-                                  <i className="fas fa-apple-alt me-2" />
-                                  Banana
-                                </a>
-                                <span>(8)</span>
-                              </div>
-                            </li>
-                            <li>
-                              <div className="d-flex justify-content-between fruite-name">
-                                <a href="#">
-                                  <i className="fas fa-apple-alt me-2" />
-                                  Pumpkin
-                                </a>
-                                <span>(5)</span>
-                              </div>
-                            </li>
+                            {
+                              category.map((v) => (
+                                <li>
+                                  <div className="d-flex justify-content-between fruite-name">
+                                    <a href="#">
+                                      <i className="fas fa-apple-alt me-2" ></i>
+                                      {v.Category}
+                                      {/* {category?.find((c) => c.id == v.Category).Category} */}
+                                    </a>     
+                                  </div>
+                                </li>
+                              ))
+                            }
                           </ul>
                         </div>
                       </div>
