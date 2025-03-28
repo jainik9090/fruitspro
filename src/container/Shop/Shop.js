@@ -1,13 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { NavLink, useParams } from "react-router-dom";
 import CircularProgress from '@mui/material/CircularProgress';
-
+import Slider from '@mui/material/Slider';
 
 function Shop(props) {
   const [products, setProducts] = useState([]);
   const [search, setSearch] = useState('');
   const [sort, setSort] = useState('');
-  const [category, setCategory] = useState([]);
+  const [category, setCategory] = useState('');
+  const [selectedcat, setSelectedcat] = useState('');
+  const [price, setPrice] = useState(0);
+
 
   const getData = () => {
     const localData = JSON.parse(localStorage.getItem("product"))
@@ -16,15 +19,19 @@ function Shop(props) {
     const catedata = JSON.parse(localStorage.getItem("category"))
     setCategory(catedata);
 
+    console.log(localData, catedata);
+
+
     const UniqueData = []
     setProducts(localData);
     localData.map((v, i) => {
       let x = catedata.find((v1) => v1.id == v.Category)
 
-      if (!UniqueData.some((v2)=> v2.id === v.Category)) {
+      if (!UniqueData.some((v2) => v2.id == v.Category)) {
         UniqueData.push(x);
       }
     })
+    console.log(UniqueData);
 
     setCategory(UniqueData)
   }
@@ -51,10 +58,24 @@ function Shop(props) {
         return b.price - a.price
       }
     })
+
+    if (selectedcat) {
+      const ssdata = sData.filter((v1) => v1.Category == selectedcat);
+
+      return ssdata;
+    }
+
+    if (price) {
+      const sldata = sData.filter((v2) => v2.price <= price)
+
+      return sldata;
+
+    }
+  
     return sData;
   }
 
-  
+
   const Finaldata = handleFilter();
 
 
@@ -99,7 +120,7 @@ function Shop(props) {
                     </div>
                   </div>
                   <div className="col-6" />
-                  <div className="col-xl-3">
+                  <div className="col-xl-3" >
                     <div className="bg-light ps-3 py-3 rounded d-flex justify-content-between mb-4">
                       <label htmlFor="fruits">Default Sorting:</label>
                       <select
@@ -125,15 +146,29 @@ function Shop(props) {
                         <div className="mb-3">
                           <h4>Categories</h4>
                           <ul className="list-unstyled fruite-categorie">
+                            <li>
+                              <div className="d-flex justify-content-between fruite-name">
+                                <a href="#" onClick={() => setSelectedcat()} style={{
+                                  color: selectedcat ? "#81c408" : "orange",
+                                }}>
+                                  <i className="fas fa-apple-alt me-2" ></i>
+                                  All
+                                </a>
+                                <span>({products.length})</span>
+                              </div>
+                            </li>
                             {
                               category.map((v) => (
                                 <li>
                                   <div className="d-flex justify-content-between fruite-name">
-                                    <a href="#">
+                                    <a href="#" onClick={() => setSelectedcat(v.id)} style={{
+                                      color: selectedcat == v.id ? "orange" : "#81c408",
+                                    }}>
                                       <i className="fas fa-apple-alt me-2" ></i>
                                       {v.Category}
                                       {/* {category?.find((c) => c.id == v.Category).Category} */}
-                                    </a>     
+                                    </a>
+                                    <span>({products.filter((v1) => v1.Category == v.id).length})</span>
                                   </div>
                                 </li>
                               ))
@@ -144,24 +179,24 @@ function Shop(props) {
                       <div className="col-lg-12">
                         <div className="mb-3">
                           <h4 className="mb-2">Price</h4>
-                          <input
-                            type="range"
-                            className="form-range w-100"
-                            id="rangeInput"
-                            name="rangeInput"
-                            min={0}
-                            max={500}
+                          <Slider 
+                            style={{color: "#81c408 "}}
                             defaultValue={0}
-                            oninput="amount.value=rangeInput.value"
+                            aria-label="Default"
+                            valueLabelDisplay="auto"
+                            min={100}
+                            max={500}
+                            onChange={(e, v) => setPrice(v)}
+                            value={price}
                           />
                           <output
                             id="amount"
                             name="amount"
-                            min-velue={0}
-                            max-value={500}
+                            min={0}
+                            max={500}
                             htmlFor="rangeInput"
                           >
-                            0
+                            {price}
                           </output>
                         </div>
                       </div>
@@ -356,7 +391,7 @@ function Shop(props) {
                                   className="text-white bg-secondary px-3 py-1 rounded position-absolute"
                                   style={{ top: 10, left: 10 }}
                                 >
-                                  {v.Category}
+                                  {category.find(v1 => v1.id == v.Category).Category}
                                 </div>
 
                                 <div className="p-4 border border-secondary border-top-0 rounded-bottom">
