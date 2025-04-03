@@ -34,7 +34,7 @@ function Shopdetail(props) {
     onSubmit: (values, {resetForm}) => {
       console.log(values);
       const shopData = JSON.parse(localStorage.getItem("shopDetaile"))
-      let obj ={ ...values,id:Math.floor(Math.random()*1000)}
+      let obj ={ ...values,id:Math.floor(Math.random()*1000), status:'Panding'}
       if (shopData) {
         shopData.push(obj);
         localStorage.setItem("shopDetaile", JSON.stringify(shopData));
@@ -43,7 +43,7 @@ function Shopdetail(props) {
       }
 
       getData();
-    
+      resetForm()
 
     },
    

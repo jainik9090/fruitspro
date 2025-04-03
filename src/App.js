@@ -13,15 +13,19 @@ import Layout from './admin/component/Layout/Layout';
 import Category from './admin/container/Category/Category';
 import UserRoutes from './Routes/UserRoutes';
 import AdminRoutes from './Routes/AdminRoutes';
+import Counter from './admin/container/counter/Counter';
+import { Provider } from 'react-redux';
+import { store } from './admin/container/redux/slice/store';
 
 function App() {
   return (
-    <>
+    <Provider store={store}>
        <Routes>
                 <Route path='/*' element={<UserRoutes />}/>    
-                <Route path='/admin/*' element={<AdminRoutes />}/>      
+                <Route path='/admin/*' element={<AdminRoutes />}/>  
+                <Route path='/counter' element={<Counter />}/>          
         </Routes>
-    </>
+    </Provider>
    
   );
 }

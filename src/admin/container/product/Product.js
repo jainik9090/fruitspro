@@ -14,6 +14,8 @@ import { FormHelperText, IconButton, Paper } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
+import { useDispatch, useSelector } from 'react-redux';
+import { productUser } from '../redux/slice/product.slice';
 
 
 function Product(props) {
@@ -23,6 +25,12 @@ function Product(props) {
     const [category, setCategory] = React.useState([]);
     const [subcategory, setSubCategory] = React.useState([]);
 
+    const dispatch = useDispatch(productUser);
+
+    const p = useSelector(state => state.product)
+    console.log(p);
+    
+
     useEffect(() => {
         getData();
     }, [])
@@ -30,11 +38,7 @@ function Product(props) {
 
 
     const getData = () => {
-        const prodata = JSON.parse(localStorage.getItem("product"))
-        setProduct(prodata);
-
-        const catedata = JSON.parse(localStorage.getItem("category"))
-        setCategory(catedata);
+      dispatch(productUser());
     }
 
 

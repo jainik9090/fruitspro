@@ -9,7 +9,6 @@ import FormControl from '@mui/material/FormControl';
 
 function Shopdetaile(props) {
     const [open, setOpen] = useState(false);
-    const [data, setData] = useState('');
     const [shopdata, setShopdata] = useState('');
     const [update, setUpdte] = useState(false);
 
@@ -24,16 +23,15 @@ function Shopdetaile(props) {
     const handleClose = () => {
         setOpen(false);
         resetForm();
-        
+
     };
 
     useEffect(() => {
         getData();
-    },[])
+    }, [])
 
     const getData = () => {
-        const shopData = JSON.parse(localStorage.getItem("shopDetaileData"))
-        setData(shopData)
+       
 
         const shopdet = JSON.parse(localStorage.getItem("shopDetaile"))
         setShopdata(shopdet)
@@ -43,36 +41,26 @@ function Shopdetaile(props) {
         name: string().required(),
         email: string().required().email(),
         review: string().required(),
-        rating: string().required()
+        status: string().required()
     })
     const formicksdata = useFormik({
         initialValues: {
             name: '',
             email: '',
             review: '',
-            rating: ''
+            status: ''
         },
         validateSchema: Shopdatetaileschema,
-        onsubmit: (values, {resetForm}) => {
+        onSubmit: (values, { resetForm }) => {
             console.log(values);
             const shopData = JSON.parse(localStorage.getItem("shopDetaile"))
-            if (update) {
-                let index = shopData.findIndex((v) => v.id === values);
-                console.log(index);
-                shopData[index] = values;
-                localStorage.setItem("shopDetaile", JSON.stringify(shopData));
-            } else {
-                let obj = { ...values, id: Math.floor(Math.random() * 1000) }
-                if (shopData) {
-                    shopData.push(obj);
-                    localStorage.setItem("shopDetaile", JSON.stringify(shopData));
-                } else {
-                    localStorage.setItem("shopDetaile", JSON.stringify([obj]));
-                }
-            }
+            let index = shopData.findIndex((v) => v.id === values.id);
+            shopData[index] = values;
+            localStorage.setItem("shopDetaile", JSON.stringify(shopData));
 
             getData();
             resetForm();
+            handleClose();
         }
     });
 
@@ -86,6 +74,7 @@ function Shopdetaile(props) {
         { field: "name", headerName: "name", width: 130 },
         { field: "email", headerName: "email", width: 130 },
         { field: "review", headerName: "review", width: 130 },
+        { field: "status", headerName: "status", width: 130 },
         {
             headerName: "Action",
             renderCell: (params) => (
@@ -101,7 +90,7 @@ function Shopdetaile(props) {
     const paginationModel = { page: 0, pageSize: 5 };
 
 
-    const { handleSubmit, handleBlur, handleChange, errors, values, touched, setValues,resetForm } = formicksdata;
+    const { handleSubmit, handleBlur, handleChange, errors, values, touched, setValues, resetForm } = formicksdata;
     return (
         <React.Fragment>
             <h1>Shopdetaile Data</h1>
@@ -157,32 +146,29 @@ function Shopdetaile(props) {
                             error={touched.review && errors.review}
                         />
                         {touched.review && errors.review ? errors.review : ''}
+                        <InputLabel id="demo-simple-select-label">Rating</InputLabel>
+                        <Select
+                            labelId="demo-simple-select-label"
+                            id="demo-simple-select"
+                            value={values.status}
+                            label="status"
+                            name='status'
+                            onChange={handleChange}
+                            onBlur={handleBlur}
 
+                        >
 
-                        <FormControl fullWidth>
-                            <InputLabel id="demo-simple-select-label">Rating</InputLabel>
-                            <Select
-                                labelId="demo-simple-select-label"
-                                id="demo-simple-select"
-                                value={values.rating}
-                                label="rating"
-                                name='rating'
-                                onChange={handleChange}
-                                onBlur={handleBlur}
-
-                            >
-                                
-                                <MenuItem value={1}>Padding</MenuItem>
-                                <MenuItem value={2}>Reject</MenuItem>
-                                <MenuItem value={3}>Approved</MenuItem>
-                            </Select>
-                        </FormControl>
+                            <MenuItem value={'Panding'}>Panding</MenuItem>
+                            <MenuItem value={'Reject'}>Reject</MenuItem>
+                            <MenuItem value={'Approved'}>Approved</MenuItem>
+                        </Select>
                     </DialogContent>
+                    <DialogActions>
+                        <Button onClick={handleClose}>Cancel</Button>
+                        <Button type="submit">{update ? "Update" : "Submit"}</Button>
+                    </DialogActions>
                 </form>
-                <DialogActions>
-                    <Button onClick={handleClose}>Cancel</Button>
-                    <Button type="submit">{update ? "Update" : "Submit"}</Button>
-                </DialogActions>
+
             </Dialog>
             <Paper sx={{ height: 400, width: "100%" }}>
                 <DataGrid
