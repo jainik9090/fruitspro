@@ -19,11 +19,20 @@ import {
 import { DataGrid } from "@mui/x-data-grid";
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
+import { addCategory, categoryUser, deleteCategory, updateCategory } from "../redux/slice/category.slice";
+import { useDispatch, useSelector } from "react-redux";
 
 function Category(props) {
   const [open, setOpen] = React.useState(false);
   const [update, setUpdate] = useState(false);
   const [data, setData] = useState([]);
+
+
+  const dispatch = useDispatch(categoryUser);
+
+  const p = useSelector(state => state.category)
+  console.log(p);
+    
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -53,18 +62,9 @@ function Category(props) {
 
 
       if (update) {
-        let index = localdata.findIndex((v) => v.id === values.id);
-        console.log(index);
-        localdata[index] = values;
-        localStorage.setItem("category", JSON.stringify(localdata));
+       dispatch(updateCategory(values))
       } else {
-        let obj = { ...values, id: Math.floor(Math.random() * 10000) };
-        if (localdata) {
-          localdata.push(obj);
-          localStorage.setItem("category", JSON.stringify(localdata));
-        } else {
-          localStorage.setItem("category", JSON.stringify([obj]));
-        }
+       dispatch(addCategory(values))
       }
       getData();
       handleClose();
@@ -75,11 +75,7 @@ function Category(props) {
   const { handleSubmit, handleBlur, handleChange, values, errors, touched, setValues, resetForm } = formikcat;
 
   const handleDelete = (id) => {
-    console.log(id);
-    const localdata = data.filter((v) => v.id !== id);
-    localStorage.setItem("category", JSON.stringify(localdata));
-    getData();
-    handleClose();
+   dispatch(deleteCategory(id))
   }
 
   const handleEdit = (data) => {
@@ -107,9 +103,8 @@ function Category(props) {
   ];
 
   const getData = () => {
-    const localdata = JSON.parse(localStorage.getItem("category"));
-
-    setData(localdata);
+    dispatch(categoryUser());
+   
   };
 
   const paginationModel = { page: 0, pageSize: 5 };
@@ -175,7 +170,7 @@ function Category(props) {
 
       <Paper sx={{ height: 400, width: "100%" }}>
         <DataGrid
-          rows={data}
+          rows={p.category}
           columns={columns}
           initialState={{ pagination: { paginationModel } }}
           pageSizeOptions={[5, 10]}

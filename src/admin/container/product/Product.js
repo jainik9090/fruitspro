@@ -15,7 +15,7 @@ import { DataGrid } from '@mui/x-data-grid';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import { useDispatch, useSelector } from 'react-redux';
-import { productUser } from '../redux/slice/product.slice';
+import { addProduct, deleteProduct, productUser, updateProduct } from '../redux/slice/product.slice';
 
 
 function Product(props) {
@@ -39,7 +39,15 @@ function Product(props) {
 
     const getData = () => {
       dispatch(productUser());
+
+      const catData =JSON.parse(localStorage.getItem("category"));
+      console.log(catData);
+      
+      setCategory(catData);
     }
+
+    console.log(category);
+    
 
 
     const handleClickOpen = () => {
@@ -73,20 +81,9 @@ function Product(props) {
             const prodata = JSON.parse(localStorage.getItem("product"))
 
           if (update) {
-            let index = prodata.findIndex((v) => v.id === values.id);
-            console.log(index);
-            prodata[index]=values;
-            localStorage.setItem("product", JSON.stringify(prodata));
-            
-            
+           dispatch(updateProduct(values)) 
           } else {
-            let obj = { ...values, id: Math.floor(Math.random() * 1000) };
-            if (prodata) {
-                prodata.push(obj);
-                localStorage.setItem("product", JSON.stringify(prodata));
-            } else {
-                localStorage.setItem("product", JSON.stringify([obj]));
-            }
+            dispatch(addProduct(values))
           }
           getData();
           handleClose();
@@ -109,8 +106,8 @@ function Product(props) {
             renderCell: (params) => {
                 console.log(params.row.Category ,category);
                 const catdat = category.find(v => v.id == params.row.Category)
-                console.log(catdat.Category);
-                return catdat.Category
+                console.log(catdat?.Category);
+                return catdat?.Category
             }
         },
         { field: "SubCategory", headerName: "SubCategory", width: 130, 
@@ -118,8 +115,8 @@ function Product(props) {
                 const subdata = JSON.parse(localStorage.getItem("subcategory"))
                 console.log(params.row.SubCategory,subdata);
                 const catdat = subdata.find(v => v.id == params.row.SubCategory)
-                console.log(catdat.SubCategory);
-                return catdat.SubCategory
+                console.log(catdat?.SubCategory);
+                return catdat?.SubCategory
                 
             }
         },
@@ -142,11 +139,7 @@ function Product(props) {
     ];
 
     const handleDelete = (id) => {
-        console.log(id);
-        const prodata = product.filter((v) => v.id !== id);
-        localStorage.setItem("product", JSON.stringify(prodata));
-        getData();
-        handleClose();
+      dispatch(deleteProduct(id))
 
     }
     const handleEdit = (product) => {
@@ -272,7 +265,7 @@ function Product(props) {
             </Dialog>
             <Paper sx={{ height: 400, width: "100%" }}>
                 <DataGrid
-                    rows={product}
+                    rows={p.product}
                     columns={columns}
                     initialState={{ pagination: { paginationModel } }}
                     pageSizeOptions={[5, 10]}
