@@ -77,6 +77,8 @@ export const productSlice = createSlice({
     initialState,
     extraReducers: (builder) => {
         builder.addCase(productUser.fulfilled, (state, action) => {
+          console.log("aaa", action.payload);
+          
           state.product = action.payload
         });
         builder.addCase(addProduct.fulfilled, (state, action) => {

@@ -21,12 +21,19 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import React, { useEffect, useState } from "react";
 import { object, string } from "yup";
+import { useDispatch, useSelector } from "react-redux";
+import { getCategory } from "../container/redux/slice/category.slice";
+import { addSubcate, deleteSubcat, getSubcatdata, updateSubcate } from "../container/redux/slice/subcat.slice";
 
 function Subcategory(props) {
   const [open, setOpen] = React.useState(false);
   const [data, setCategorydata] = React.useState([]);
   const [subd, setSubd] = useState([]);
   const [update, setUpdate] = useState(false);
+  const dispatch = useDispatch();
+
+  const Subcatdata = useSelector(state => state.subcategory)
+  const categoryData = useSelector(state => state.category)
 
   useEffect(() => {
     getData();
@@ -62,18 +69,9 @@ function Subcategory(props) {
       const subdata = JSON.parse(localStorage.getItem("subcategory"))
 
       if (update) {
-        let index = subdata.findIndex((v) => v.id === values.id);
-        console.log(index);
-        subdata[index] = values;
-        localStorage.setItem("subcategory", JSON.stringify(subdata));
+        dispatch(updateSubcate(values))
       } else {
-        let obj = { ...values, id: Math.floor(Math.random() * 10000) };
-        if (subdata) {
-          subdata.push(obj);
-          localStorage.setItem("subcategory", JSON.stringify(subdata));
-        } else {
-          localStorage.setItem("subcategory", JSON.stringify([obj]));
-        }
+        dispatch(addSubcate(values))
       }
 
       getData();
@@ -88,11 +86,7 @@ function Subcategory(props) {
   console.log(values);
 
   const handleDelete = (id) => {
-    console.log(id);
-    const subdata = subd.filter((v) => v.id !== id);
-    localStorage.setItem("subcategory", JSON.stringify(subdata));
-    getData();
-    handleClose();
+   dispatch(deleteSubcat(id))
   }
 
 
@@ -109,12 +103,9 @@ function Subcategory(props) {
       headerName: "Category",
       width: 270,
       renderCell: (params) => {
-      console.log(params.row.Category,data);
-      const catdata = data.find(v => v.id  == params.row.Category)
-      console.log(catdata);
-      
-      return catdata.Category
-      }  
+        const catdata = categoryData?.category.find(v => v.id == params.row.Category)
+        return catdata?.Category
+      }
     },
     { field: "SubCategory", headerName: "SubCategory", width: 130 },
     { field: "Descripition", headerName: "Descripition", width: 130 },
@@ -135,11 +126,15 @@ function Subcategory(props) {
 
 
   const getData = () => {
-    const subdata = JSON.parse(localStorage.getItem("subcategory"))
-    setSubd(subdata);
+    dispatch(getCategory())
+    dispatch(getSubcatdata())
+    
 
-    const localdata = JSON.parse(localStorage.getItem("category"));
-    setCategorydata(localdata);
+    //   const subdata = JSON.parse(localStorage.getItem("subcategory"))
+    //   setSubd(subdata);
+
+    //   const localdata = JSON.parse(localStorage.getItem("category"));
+    //   setCategorydata(localdata);
   }
   const paginationModel = { page: 0, pageSize: 5 };
 
@@ -171,7 +166,7 @@ function Subcategory(props) {
             >
               <option value="">--Select Category--</option>
               {
-                data?.map((v) => (
+                categoryData?.category?.map((v) => (
                   <option value={v.id}>{v.Category}</option>
                 ))
               }
@@ -224,7 +219,7 @@ function Subcategory(props) {
       </Dialog>
       <Paper sx={{ height: 400, width: "100%" }}>
         <DataGrid
-          rows={subd}
+          rows={Subcatdata.subcategory}
           columns={columns}
           initialState={{ pagination: { paginationModel } }}
           pageSizeOptions={[5, 10]}

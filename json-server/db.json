@@ -1,10 +1,46 @@
 {
-  "Product": [],
+  "Product": [
+    {
+      "id": "aba3",
+      "Category": "8458",
+      "SubCategory": "987e",
+      "pname": "bger",
+      "price": "120",
+      "pDescripition": "fgjngjfjfgjf"
+    },
+    {
+      "id": "66d2",
+      "Category": "9e39",
+      "SubCategory": "bc2f",
+      "pname": "bger",
+      "price": "120",
+      "pDescripition": "fgjngjfjfgjf"
+    }
+  ],
   "Category": [
     {
-      "id": "ea27",
-      "Category": "dsfg",
+      "id": "8458",
+      "Category": "vagetables",
+      "Descripition": "ddsfv df dfbdf"
+    },
+    {
+      "id": "9e39",
+      "Category": "fruits",
+      "Descripition": "fdhdfgh"
+    }
+  ],
+  "Subcategory": [
+    {
+      "id": "987e",
+      "Category": "8458",
+      "SubCategory": "potato",
       "Descripition": "hjkgkghjk"
+    },
+    {
+      "id": "bc2f",
+      "Category": "9e39",
+      "SubCategory": "apple",
+      "Descripition": "hkh"
     }
   ]
 }

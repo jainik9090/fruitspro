@@ -47,7 +47,7 @@ function Shop(props) {
   }, [])
 
   const handleFilter = () => {
-    const fdata =products .filter((v) =>
+    const fdata = productData?.product.filter((v) =>
       v.pname.toLowerCase().includes(search.toLowerCase()) ||
       v.pDescripition.toLowerCase().includes(search.toLowerCase()) ||
       v.price.toLowerCase().includes(search.toLowerCase())
@@ -84,9 +84,11 @@ function Shop(props) {
 
   const Finaldata = handleFilter();
 
+  console.log(productData?.product);
+  
 
   return (
-    products.length > 0 ?
+    productData?.product.length > 0 ?
       <div>
         {/* Single Page Header start */}
         <div className="container-fluid page-header py-5">

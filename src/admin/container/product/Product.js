@@ -33,6 +33,8 @@ function Product(props) {
 
     const c = useSelector(state => state.category);
 
+    const s = useSelector(state => state.subcategory);
+
     console.log(c.category);
 
 
@@ -47,10 +49,9 @@ function Product(props) {
         dispatch(productUser());
         dispatch(getCategory());
 
-        const catData = JSON.parse(localStorage.getItem("category"));
-        console.log(catData);
+        
 
-        setCategory(catData);
+   
     }
 
     console.log(category);
@@ -85,8 +86,6 @@ function Product(props) {
         onSubmit: (values) => {
             console.log(values);
 
-            const prodata = JSON.parse(localStorage.getItem("product"))
-
             if (update) {
                 dispatch(updateProduct(values))
             } else {
@@ -102,8 +101,8 @@ function Product(props) {
 
     const handlecatedata = (t) => {
         console.log(t);
-        const subdata = JSON.parse(localStorage.getItem("subcategory"))
-        const sdata = subdata.filter((v) => v.Category === t)
+    
+        const sdata = s?.subcategory.filter((v) => v.Category === t)
         setSubCategory(sdata)
     }
 
@@ -113,7 +112,7 @@ function Product(props) {
             field: "Category", headerName: "Category", width: 120,
             renderCell: (params) => {
                 console.log(params.row.Category, category);
-                const catdat = category.find(v => v.id == params.row.Category)
+                const catdat = c?.category.find(v => v.id == params.row.Category)
                 console.log(catdat?.Category);
                 return catdat?.Category
             }
@@ -121,9 +120,9 @@ function Product(props) {
         {
             field: "SubCategory", headerName: "SubCategory", width: 130,
             renderCell: (params) => {
-                const subdata = JSON.parse(localStorage.getItem("subcategory"))
-                console.log(params.row.SubCategory, subdata);
-                const catdat = subdata.find(v => v.id == params.row.SubCategory)
+              
+                console.log(params.row.SubCategory);
+                const catdat = s?.subcategory.find(v => v.id == params.row.SubCategory)
                 console.log(catdat?.SubCategory);
                 return catdat?.SubCategory
 

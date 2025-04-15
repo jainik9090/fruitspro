@@ -1,11 +1,15 @@
 import { useFormik } from 'formik';
 import React, { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { object, string } from 'yup';
 
+
+
 function Shopdetail(props) {
   const [data, setData] = useState('');
-
+  const dispatch = useDispatch();
+  const productData = useSelector(state => state.product)
   const { id } = useParams();
   console.log(id);
 
