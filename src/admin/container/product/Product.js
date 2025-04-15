@@ -16,6 +16,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import { useDispatch, useSelector } from 'react-redux';
 import { addProduct, deleteProduct, productUser, updateProduct } from '../redux/slice/product.slice';
+import { getCategory } from '../redux/slice/category.slice';
 
 
 function Product(props) {
@@ -29,7 +30,12 @@ function Product(props) {
 
     const p = useSelector(state => state.product)
     console.log(p);
-    
+
+    const c = useSelector(state => state.category);
+
+    console.log(c.category);
+
+
 
     useEffect(() => {
         getData();
@@ -38,16 +44,17 @@ function Product(props) {
 
 
     const getData = () => {
-      dispatch(productUser());
+        dispatch(productUser());
+        dispatch(getCategory());
 
-      const catData =JSON.parse(localStorage.getItem("category"));
-      console.log(catData);
-      
-      setCategory(catData);
+        const catData = JSON.parse(localStorage.getItem("category"));
+        console.log(catData);
+
+        setCategory(catData);
     }
 
     console.log(category);
-    
+
 
 
     const handleClickOpen = () => {
@@ -80,14 +87,14 @@ function Product(props) {
 
             const prodata = JSON.parse(localStorage.getItem("product"))
 
-          if (update) {
-           dispatch(updateProduct(values)) 
-          } else {
-            dispatch(addProduct(values))
-          }
-          getData();
-          handleClose();
-          resetForm();
+            if (update) {
+                dispatch(updateProduct(values))
+            } else {
+                dispatch(addProduct(values))
+            }
+            getData();
+            handleClose();
+            resetForm();
         }
     })
 
@@ -102,22 +109,24 @@ function Product(props) {
 
 
     const columns = [
-        { field: "Category", headerName: "Category", width: 120 ,
+        {
+            field: "Category", headerName: "Category", width: 120,
             renderCell: (params) => {
-                console.log(params.row.Category ,category);
+                console.log(params.row.Category, category);
                 const catdat = category.find(v => v.id == params.row.Category)
                 console.log(catdat?.Category);
                 return catdat?.Category
             }
         },
-        { field: "SubCategory", headerName: "SubCategory", width: 130, 
+        {
+            field: "SubCategory", headerName: "SubCategory", width: 130,
             renderCell: (params) => {
                 const subdata = JSON.parse(localStorage.getItem("subcategory"))
-                console.log(params.row.SubCategory,subdata);
+                console.log(params.row.SubCategory, subdata);
                 const catdat = subdata.find(v => v.id == params.row.SubCategory)
                 console.log(catdat?.SubCategory);
                 return catdat?.SubCategory
-                
+
             }
         },
         { field: "pname", headerName: "pname", width: 130 },
@@ -139,7 +148,7 @@ function Product(props) {
     ];
 
     const handleDelete = (id) => {
-      dispatch(deleteProduct(id))
+        dispatch(deleteProduct(id))
 
     }
     const handleEdit = (product) => {
@@ -148,7 +157,7 @@ function Product(props) {
         handleClickOpen();
         handlecatedata(product.Category);
         setUpdate(true);
-        
+
     }
 
     const paginationModel = { page: 0, pageSize: 5 };
@@ -182,7 +191,7 @@ function Product(props) {
                             >
                                 <option value="">--Select Category--</option>
                                 {
-                                    category?.map((v) => (
+                                    c.category?.map((v) => (
                                         <option value={v.id}>{v.Category}</option>
                                     ))
                                 }

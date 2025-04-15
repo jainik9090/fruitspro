@@ -2,38 +2,44 @@ import React, { useEffect, useState } from "react";
 import { NavLink, useParams } from "react-router-dom";
 import CircularProgress from '@mui/material/CircularProgress';
 import Slider from '@mui/material/Slider';
+import { useDispatch, useSelector } from "react-redux";
+import { productUser } from "../../admin/container/redux/slice/product.slice";
+import { getCategory } from "../../admin/container/redux/slice/category.slice";
 
 function Shop(props) {
   const [products, setProducts] = useState([]);
   const [search, setSearch] = useState('');
   const [sort, setSort] = useState('');
-  const [category, setCategory] = useState('');
   const [selectedcat, setSelectedcat] = useState('');
   const [price, setPrice] = useState(0);
+  const dispatch = useDispatch();
+  const productData = useSelector(state => state.product)
+  const categoryData = useSelector(state => state.category)
 
 
   const getData = () => {
-    const localData = JSON.parse(localStorage.getItem("product"))
-    setProducts(localData);
 
-    const catedata = JSON.parse(localStorage.getItem("category"))
-    setCategory(catedata);
+    
 
-    console.log(localData, catedata);
+    dispatch(productUser())
+    dispatch(getCategory())
 
 
-    const UniqueData = []
-    setProducts(localData);
-    localData.map((v, i) => {
-      let x = catedata.find((v1) => v1.id == v.Category)
+    console.log(productData?.product, categoryData?.category);
 
-      if (!UniqueData.some((v2) => v2.id == v.Category)) {
-        UniqueData.push(x);
-      }
-    })
-    console.log(UniqueData);
 
-    setCategory(UniqueData)
+    //   const UniqueData = []
+    //   setProducts(localData);
+    //   localData.map((v, i) => {
+    //     let x = catedata.find((v1) => v1.id == v.Category)
+
+    //     if (!UniqueData.some((v2) => v2.id == v.Category)) {
+    //       UniqueData.push(x);
+    //     }
+    //   })
+    //   console.log(UniqueData);
+
+    //   setCategory(UniqueData)
   }
 
   useEffect(() => {
@@ -41,7 +47,7 @@ function Shop(props) {
   }, [])
 
   const handleFilter = () => {
-    const fdata = products.filter((v) =>
+    const fdata =products .filter((v) =>
       v.pname.toLowerCase().includes(search.toLowerCase()) ||
       v.pDescripition.toLowerCase().includes(search.toLowerCase()) ||
       v.price.toLowerCase().includes(search.toLowerCase())
@@ -71,7 +77,7 @@ function Shop(props) {
       return sldata;
 
     }
-  
+
     return sData;
   }
 
@@ -158,7 +164,7 @@ function Shop(props) {
                               </div>
                             </li>
                             {
-                              category.map((v) => (
+                              categoryData?.category.map((v) => (
                                 <li>
                                   <div className="d-flex justify-content-between fruite-name">
                                     <a href="#" onClick={() => setSelectedcat(v.id)} style={{
@@ -168,7 +174,7 @@ function Shop(props) {
                                       {v.Category}
                                       {/* {category?.find((c) => c.id == v.Category).Category} */}
                                     </a>
-                                    <span>({products.filter((v1) => v1.Category == v.id).length})</span>
+                                    <span>({productData?.product.filter((v1) => v1.Category == v.id).length})</span>
                                   </div>
                                 </li>
                               ))
@@ -179,8 +185,8 @@ function Shop(props) {
                       <div className="col-lg-12">
                         <div className="mb-3">
                           <h4 className="mb-2">Price</h4>
-                          <Slider 
-                            style={{color: "#81c408 "}}
+                          <Slider
+                            style={{ color: "#81c408 " }}
                             defaultValue={0}
                             aria-label="Default"
                             valueLabelDisplay="auto"
@@ -391,7 +397,7 @@ function Shop(props) {
                                   className="text-white bg-secondary px-3 py-1 rounded position-absolute"
                                   style={{ top: 10, left: 10 }}
                                 >
-                                  {category.find(v1 => v1.id == v.Category).Category}
+                                  {categoryData?.category.find(v1 => v1.id == v.Category)?.Category}
                                 </div>
 
                                 <div className="p-4 border border-secondary border-top-0 rounded-bottom">

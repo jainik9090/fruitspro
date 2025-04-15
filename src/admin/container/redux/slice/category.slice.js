@@ -6,8 +6,8 @@ const initialState = {
     error: null
 }
 
-export const categoryUser = createAsyncThunk(
-    "category/categoryUser",
+export const getCategory = createAsyncThunk(
+    "category/getCategory",
 
     async () => {
         const responce = await fetch("http://localhost:4000/Category")
@@ -71,7 +71,7 @@ export const categorySlice = createSlice({
     name: "category",
     initialState,
     extraReducers: (builder) => {
-        builder.addCase(categoryUser.fulfilled, (state, action) => {
+        builder.addCase(getCategory.fulfilled, (state, action) => {
             state.category = action.payload
         });
         builder.addCase(addCategory.fulfilled, (state, action) => {

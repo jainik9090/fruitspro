@@ -1,32 +1,10 @@
 {
-  "Product": [
-    {
-      "id": "9349",
-      "Category": "3657",
-      "SubCategory": "127",
-      "pname": "okok",
-      "price": "1200",
-      "pDescripition": "7unyunyi"
-    },
-    {
-      "id": "72d4",
-      "Category": "7097",
-      "SubCategory": "6596",
-      "pname": "maulik",
-      "price": "250",
-      "pDescripition": "greg"
-    }
-  ],
+  "Product": [],
   "Category": [
     {
-      "id": "a432",
+      "id": "ea27",
       "Category": "dsfg",
       "Descripition": "hjkgkghjk"
-    },
-    {
-      "id": "379f",
-      "Category": "jainik",
-      "Descripition": "ddsfv df dfbdf"
     }
   ]
 }

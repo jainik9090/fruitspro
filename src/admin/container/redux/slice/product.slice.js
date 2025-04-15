@@ -7,9 +7,11 @@ const initialState = {
     error:null    
 }
 
-export const productUser = createAsyncThunk(
-    "product/productUser",
+export const productUser   = createAsyncThunk(
+    "product/productUser  ",
     async () => {
+      console.log("okokok");
+      
       const response = await fetch("http://localhost:4000/Product");
       const data = await response.json();
 

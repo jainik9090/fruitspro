@@ -19,7 +19,7 @@ import {
 import { DataGrid } from "@mui/x-data-grid";
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
-import { addCategory, categoryUser, deleteCategory, updateCategory } from "../redux/slice/category.slice";
+import { addCategory, getCategory, deleteCategory, updateCategory } from "../redux/slice/category.slice";
 import { useDispatch, useSelector } from "react-redux";
 
 function Category(props) {
@@ -28,7 +28,7 @@ function Category(props) {
   const [data, setData] = useState([]);
 
 
-  const dispatch = useDispatch(categoryUser);
+  const dispatch = useDispatch();
 
   const p = useSelector(state => state.category)
   console.log(p);
@@ -103,7 +103,7 @@ function Category(props) {
   ];
 
   const getData = () => {
-    dispatch(categoryUser());
+    dispatch(getCategory());
    
   };
 
