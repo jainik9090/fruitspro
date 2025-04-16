@@ -6,11 +6,16 @@ import React, { useEffect, useState } from 'react';
 import { object, string } from 'yup';
 import EditIcon from '@mui/icons-material/Edit';
 import FormControl from '@mui/material/FormControl';
+import { useDispatch, useSelector } from 'react-redux';
+import { getShopdet } from '../redux/slice/shopdet.slice';
 
 function Shopdetaile(props) {
     const [open, setOpen] = useState(false);
     const [shopdata, setShopdata] = useState('');
     const [update, setUpdte] = useState(false);
+    const dispatch = useDispatch();
+
+    const shopdeData = useSelector(state => state.shopdet);
 
 
 
@@ -31,7 +36,7 @@ function Shopdetaile(props) {
     }, [])
 
     const getData = () => {
-       
+       dispatch(getShopdet())
 
         const shopdet = JSON.parse(localStorage.getItem("shopDetaile"))
         setShopdata(shopdet)
@@ -53,10 +58,10 @@ function Shopdetaile(props) {
         validateSchema: Shopdatetaileschema,
         onSubmit: (values, { resetForm }) => {
             console.log(values);
-            const shopData = JSON.parse(localStorage.getItem("shopDetaile"))
-            let index = shopData.findIndex((v) => v.id === values.id);
-            shopData[index] = values;
-            localStorage.setItem("shopDetaile", JSON.stringify(shopData));
+           
+            let index = shopdeData?.shopdet?.findIndex((v) => v.id === values.id);
+      
+            
 
             getData();
             resetForm();

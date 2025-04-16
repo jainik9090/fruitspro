@@ -22,7 +22,7 @@ function UserRoutes(props) {
         <Route path="/cart" element={<Cart />} />
         <Route path="/chackout" element={<Chackout />} />
         <Route path="/shop" element={<Shop />} />
-        <Route path="/shopdetail/:id" element={<Shopdetail />} />
+        <Route path="/shopdetail/:x" element={<Shopdetail />} />
         <Route path="/textmonial" element={<Testumonial />} />
       </Routes>
       <Footer />

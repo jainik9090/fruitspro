@@ -1,8 +1,11 @@
 import { useFormik } from 'formik';
 import React, { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { object, string } from 'yup';
+import { productUser } from '../../admin/container/redux/slice/product.slice';
+import { addShopdet, getShopdet } from '../../admin/container/redux/slice/shopdet.slice';
+
 
 
 
@@ -10,16 +13,21 @@ function Shopdetail(props) {
   const [data, setData] = useState('');
   const dispatch = useDispatch();
   const productData = useSelector(state => state.product)
-  const { id } = useParams();
-  console.log(id);
+  const catData = useSelector(state => state.category)
+  const shopdetData = useSelector(state => state.shopdet)
+
+  const { x } = useParams();
+  const obj = productData?.product?.find(v => v.id === x)
+  console.log(x, obj);
 
   useEffect(() => {
     getData();
   }, [])
 
   const getData = () => {
-    const shopData = JSON.parse(localStorage.getItem("shopDetaile"))
-    setData(shopData)
+    dispatch(productUser())
+    dispatch(getShopdet())
+
   }
 
   const Shopdetschema = object({
@@ -35,27 +43,27 @@ function Shopdetail(props) {
       review: ''
     },
     validationSchema: Shopdetschema,
-    onSubmit: (values, {resetForm}) => {
+    onSubmit: (values, { resetForm }) => {
       console.log(values);
       const shopData = JSON.parse(localStorage.getItem("shopDetaile"))
-      let obj ={ ...values,id:Math.floor(Math.random()*1000), status:'Panding'}
+      let obj = { ...values, id: Math.floor(Math.random() * 1000), status: 'Panding' }
       if (shopData) {
         shopData.push(obj);
         localStorage.setItem("shopDetaile", JSON.stringify(shopData));
       } else {
-        localStorage.setItem("shopDetaile", JSON.stringify([obj]));
+       dispatch(addShopdet(values))
       }
 
       getData();
       resetForm()
 
     },
-   
+
   });
-  
-  
-  
-  
+
+
+
+
 
   const { handleSubmit, handleChange, handleBlur, values, errors, touched, resetForm } = formicksdata
   return (
@@ -83,34 +91,41 @@ function Shopdetail(props) {
                     </a>
                   </div>
                 </div>
-                <div className="col-lg-6">
-                  <h4 className="fw-bold mb-3">Brocoli</h4>
-                  <p className="mb-3">Category: Vegetables</p>
-                  <h5 className="fw-bold mb-3">3,35 $</h5>
-                  <div className="d-flex mb-4">
-                    <i className="fa fa-star text-secondary" />
-                    <i className="fa fa-star text-secondary" />
-                    <i className="fa fa-star text-secondary" />
-                    <i className="fa fa-star text-secondary" />
-                    <i className="fa fa-star" />
-                  </div>
-                  <p className="mb-4">The generated Lorem Ipsum is therefore always free from repetition injected humour, or non-characteristic words etc.</p>
-                  <p className="mb-4">Susp endisse ultricies nisi vel quam suscipit. Sabertooth peacock flounder; chain pickerel hatchetfish, pencilfish snailfish</p>
-                  <div className="input-group quantity mb-5" style={{ width: 100 }}>
-                    <div className="input-group-btn">
-                      <button className="btn btn-sm btn-minus rounded-circle bg-light border">
-                        <i className="fa fa-minus" />
-                      </button>
+                <>
+                  {
+
+                    <div className="col-lg-6">
+                      <h4 className="fw-bold mb-3">{obj?.pname}</h4>
+                          <p className="mb-3">Category: {catData?.category?.find((v1) => v1.id === obj.Category)?.Category}</p>
+                      <h5 className="fw-bold mb-3">{obj?.price} $</h5>
+                      <div className="d-flex mb-4">
+                        <i className="fa fa-star text-secondary" />
+                        <i className="fa fa-star text-secondary" />
+                        <i className="fa fa-star text-secondary" />
+                        <i className="fa fa-star text-secondary" />
+                        <i className="fa fa-star" />
+                      </div>
+                      <p className="mb-4">{obj?.pDescripition}</p>
+                      <div className="input-group quantity mb-5" style={{ width: 100 }}>
+                        <div className="input-group-btn">
+                          <button className="btn btn-sm btn-minus rounded-circle bg-light border">
+                            <i className="fa fa-minus" />
+                          </button>
+                        </div>
+                        <input type="text" className="form-control form-control-sm text-center border-0" defaultValue={1} />
+                        <div className="input-group-btn">
+                          <button className="btn btn-sm btn-plus rounded-circle bg-light border">
+                            <i className="fa fa-plus" />
+                          </button>
+                        </div>
+                      </div>
+                      <a href="#" className="btn border border-secondary rounded-pill px-4 py-2 mb-4 text-primary"><i className="fa fa-shopping-bag me-2 text-primary" /> Add to cart</a>
                     </div>
-                    <input type="text" className="form-control form-control-sm text-center border-0" defaultValue={1} />
-                    <div className="input-group-btn">
-                      <button className="btn btn-sm btn-plus rounded-circle bg-light border">
-                        <i className="fa fa-plus" />
-                      </button>
-                    </div>
-                  </div>
-                  <a href="#" className="btn border border-secondary rounded-pill px-4 py-2 mb-4 text-primary"><i className="fa fa-shopping-bag me-2 text-primary" /> Add to cart</a>
-                </div>
+
+
+                  }
+
+                </>
                 <div className="col-lg-12">
                   <nav>
                     <div className="nav nav-tabs mb-3">
@@ -233,7 +248,7 @@ function Shopdetail(props) {
                           onBlur={handleBlur}
                           error={touched.name && errors.name}
                         />
-                       
+
                       </div>
                       {touched.name && errors.name ? errors.name : ""}
                     </div>

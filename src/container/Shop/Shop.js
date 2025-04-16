@@ -17,13 +17,14 @@ function Shop(props) {
   const categoryData = useSelector(state => state.category)
 
 
+  
+
+
+
+
   const getData = () => {
-
-    
-
     dispatch(productUser())
     dispatch(getCategory())
-
 
     console.log(productData?.product, categoryData?.category);
 
@@ -44,6 +45,7 @@ function Shop(props) {
 
   useEffect(() => {
     getData();
+
   }, [])
 
   const handleFilter = () => {
@@ -63,17 +65,19 @@ function Shop(props) {
       } else if (sort === "hl") {
         return b.price - a.price
       }
+
+   
+      
+
     })
 
     if (selectedcat) {
       const ssdata = sData.filter((v1) => v1.Category == selectedcat);
-
       return ssdata;
     }
 
     if (price) {
       const sldata = sData.filter((v2) => v2.price <= price)
-
       return sldata;
 
     }
@@ -85,7 +89,7 @@ function Shop(props) {
   const Finaldata = handleFilter();
 
   console.log(productData?.product);
-  
+
 
   return (
     productData?.product.length > 0 ?
@@ -386,7 +390,7 @@ function Shop(props) {
                       {
                         Finaldata.map((v) => (
                           <div className="col-md-6 col-lg-6 col-xl-4">
-                            <NavLink to={'/shopdetail/1'}>
+                            <NavLink to={'/shopdetail/'+ v.id}>
                               <div className="rounded position-relative fruite-item">
                                 <div className="fruite-img">
                                   <img
