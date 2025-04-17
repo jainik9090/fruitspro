@@ -23,7 +23,7 @@ export const addShopdet = createAsyncThunk(
     async (data) => {
         const response = await fetch("http://localhost:4000/Review", {
             method: "POST",
-            body: JSON.stringify(data),
+            body: JSON.stringify({...data, status: "pending"}),
             headers: {
                 "Content-Type": "application/json",
             },
@@ -35,16 +35,22 @@ export const addShopdet = createAsyncThunk(
 
     }
 )
-export const deleteShopdet = createAsyncThunk(
-    "shopdet/deleteShopdet",
 
-    async (id) => {
-        const responce = await fetch("http://localhost:4000/Review/" + id, {
-            method: "DELETE"
-        })
-        const data = await responce.json();
-        console.log(data);
-        return data.id;
+export const updateShopdet = createAsyncThunk(
+    "shopdet/updateShopdet",
+
+    async (data) => {
+        const response = await fetch("http://localhost:4000/Review/" + data.id, {
+            method: "PUT",
+            body: JSON.stringify(data),
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+
+        const rData = await response.json();
+        console.log(rData);
+        return rData;
 
     }
 )
@@ -60,14 +66,13 @@ export const shopDetSlice = createSlice({
         builder.addCase(addShopdet.fulfilled, (state, action) => {
             state.shopdet.concat(action.payload);
         })
-
-        builder.addCase(deleteShopdet.fulfilled, (state, action) => {
-            const i = state.shopdet.findIndex(v => v.id === action.payload);
-            state.shopdet.splice(i, 1);
-
+        builder.addCase(updateShopdet.fulfilled, (state, action) => {
+            const i = state.shopdet.findIndex(v => v.id === action.payload.id);
+            state.shopdet[i] = action.payload;
         })
 
-      
+
+
     }
 })
 

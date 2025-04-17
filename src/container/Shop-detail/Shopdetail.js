@@ -48,18 +48,21 @@ function Shopdetail(props) {
       const shopData = JSON.parse(localStorage.getItem("shopDetaile"))
       let obj = { ...values, id: Math.floor(Math.random() * 1000), status: 'Panding' }
       if (shopData) {
-        shopData.push(obj);
+        shopdetData?.shopdet?.push(obj);
         localStorage.setItem("shopDetaile", JSON.stringify(shopData));
       } else {
-       dispatch(addShopdet(values))
+       dispatch(addShopdet(obj = {...values, pid:x}))
       }
 
       getData();
       resetForm()
-
     },
 
   });
+
+  
+   
+  
 
 
 

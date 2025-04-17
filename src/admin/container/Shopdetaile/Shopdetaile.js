@@ -7,7 +7,8 @@ import { object, string } from 'yup';
 import EditIcon from '@mui/icons-material/Edit';
 import FormControl from '@mui/material/FormControl';
 import { useDispatch, useSelector } from 'react-redux';
-import { getShopdet } from '../redux/slice/shopdet.slice';
+import { addShopdet, getShopdet, updateShopdet } from '../redux/slice/shopdet.slice';
+import { productUser } from '../redux/slice/product.slice';
 
 function Shopdetaile(props) {
     const [open, setOpen] = useState(false);
@@ -16,6 +17,7 @@ function Shopdetaile(props) {
     const dispatch = useDispatch();
 
     const shopdeData = useSelector(state => state.shopdet);
+    const productData = useSelector(state => state.product)
 
 
 
@@ -37,12 +39,12 @@ function Shopdetaile(props) {
 
     const getData = () => {
        dispatch(getShopdet())
-
-        const shopdet = JSON.parse(localStorage.getItem("shopDetaile"))
-        setShopdata(shopdet)
+        dispatch(productUser())
+     
     }
 
     const Shopdatetaileschema = object({
+        id: string().required(),
         name: string().required(),
         email: string().required().email(),
         review: string().required(),
@@ -50,6 +52,7 @@ function Shopdetaile(props) {
     })
     const formicksdata = useFormik({
         initialValues: {
+            id:'',
             name: '',
             email: '',
             review: '',
@@ -59,23 +62,32 @@ function Shopdetaile(props) {
         onSubmit: (values, { resetForm }) => {
             console.log(values);
            
-            let index = shopdeData?.shopdet?.findIndex((v) => v.id === values.id);
+           dispatch(updateShopdet(values))
       
+         
             
 
-            getData();
+            // getData();
             resetForm();
             handleClose();
         }
     });
 
-    const handleEdite = (shopdata) => {
-        setValues(shopdata);
+    const handleEdite = (shopdeData) => {
+        setValues(shopdeData);
         handleClickOpen();
         setUpdte(true)
     }
     const columns = [
+        { field: "id", headerName: "reviewId", width: 130,
+             renderCell: (params) => {
+                console.log(params.row.pid, productData?.product);
+                const pData = productData?.product?.find(v => v.id === params.row.pid)
+                console.log(pData.pname);
+                return pData?.pname
 
+            }
+         },
         { field: "name", headerName: "name", width: 130 },
         { field: "email", headerName: "email", width: 130 },
         { field: "review", headerName: "review", width: 130 },
@@ -109,6 +121,19 @@ function Shopdetaile(props) {
                 <DialogTitle>Shopdetaile</DialogTitle>
                 <form onSubmit={handleSubmit}>
                     <DialogContent>
+                        <TextField
+                            margin="dense"
+                            id="name"
+                            name="name"
+                            label="Enter your name"
+                            type="text"
+                            fullWidth
+                            variant="standard"
+                            value={values.name}
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            error={touched.name && errors.name}
+                        />
                         <TextField
                             margin="dense"
                             id="name"
@@ -163,7 +188,7 @@ function Shopdetaile(props) {
 
                         >
 
-                            <MenuItem value={'Panding'}>Panding</MenuItem>
+                            <MenuItem value={'Pending'}>Panding</MenuItem>
                             <MenuItem value={'Reject'}>Reject</MenuItem>
                             <MenuItem value={'Approved'}>Approved</MenuItem>
                         </Select>
@@ -177,7 +202,7 @@ function Shopdetaile(props) {
             </Dialog>
             <Paper sx={{ height: 400, width: "100%" }}>
                 <DataGrid
-                    rows={shopdata}
+                    rows={shopdeData.shopdet}
                     columns={columns}
                     initialState={{ pagination: { paginationModel } }}
                     pageSizeOptions={[5, 10]}

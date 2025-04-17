@@ -50,9 +50,9 @@ function Shop(props) {
 
   const handleFilter = () => {
     const fdata = productData?.product.filter((v) =>
-      v.pname.toLowerCase().includes(search.toLowerCase()) ||
-      v.pDescripition.toLowerCase().includes(search.toLowerCase()) ||
-      v.price.toLowerCase().includes(search.toLowerCase())
+      v.pname?.toLowerCase().includes(search?.toLowerCase()) ||
+      v.pDescripition?.toLowerCase().includes(search?.toLowerCase()) ||
+      v.price?.toLowerCase().includes(search?.toLowerCase())
 
     )
     const sData = fdata.sort((a, b) => {
