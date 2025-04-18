@@ -2,9 +2,11 @@ import { useFormik } from 'formik';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
-import { object, string } from 'yup';
+import { number, object, string } from 'yup';
 import { productUser } from '../../admin/container/redux/slice/product.slice';
 import { addShopdet, getShopdet } from '../../admin/container/redux/slice/shopdet.slice';
+import { Rating } from '@mui/material';
+import { Stack } from 'react-bootstrap';
 
 
 
@@ -33,14 +35,16 @@ function Shopdetail(props) {
   const Shopdetschema = object({
     name: string().required(),
     email: string().required().email(),
-    review: string().required()
+    review: string().required(),
+    ratting: number(),
   })
 
   const formicksdata = useFormik({
     initialValues: {
       name: '',
       email: '',
-      review: ''
+      review: '',
+      ratting: '',
     },
     validationSchema: Shopdetschema,
     onSubmit: (values, { resetForm }) => {
@@ -51,20 +55,21 @@ function Shopdetail(props) {
         shopdetData?.shopdet?.push(obj);
         localStorage.setItem("shopDetaile", JSON.stringify(shopData));
       } else {
-       dispatch(addShopdet(obj = {...values, pid:x}))
+        dispatch(addShopdet(obj = { ...values, pid: x }))
       }
 
       getData();
-      resetForm()
+      resetForm();
     },
+
 
   });
 
-  
-   
-  
 
 
+
+  const fdata = shopdetData?.shopdet.filter((v => v.pid == x && v.status == "Approved"))
+  console.log(fdata);
 
 
 
@@ -99,14 +104,17 @@ function Shopdetail(props) {
 
                     <div className="col-lg-6">
                       <h4 className="fw-bold mb-3">{obj?.pname}</h4>
-                          <p className="mb-3">Category: {catData?.category?.find((v1) => v1.id === obj.Category)?.Category}</p>
+                      <p className="mb-3">Category: {catData?.category?.find((v1) => v1.id === obj.Category)?.Category}</p>
                       <h5 className="fw-bold mb-3">{obj?.price} $</h5>
                       <div className="d-flex mb-4">
-                        <i className="fa fa-star text-secondary" />
-                        <i className="fa fa-star text-secondary" />
-                        <i className="fa fa-star text-secondary" />
-                        <i className="fa fa-star text-secondary" />
-                        <i className="fa fa-star" />
+                        <Stack spacing={1}>
+                          <Rating name="ratting"
+                            defaultValue={0}
+                            precision={0.5}
+                            value={values.ratting}
+                            onChange={handleChange}
+                          />
+                        </Stack>
                       </div>
                       <p className="mb-4">{obj?.pDescripition}</p>
                       <div className="input-group quantity mb-5" style={{ width: 100 }}>
@@ -124,6 +132,7 @@ function Shopdetail(props) {
                       </div>
                       <a href="#" className="btn border border-secondary rounded-pill px-4 py-2 mb-4 text-primary"><i className="fa fa-shopping-bag me-2 text-primary" /> Add to cart</a>
                     </div>
+
 
 
                   }
@@ -290,20 +299,48 @@ function Shopdetail(props) {
                     <div className="col-lg-12">
                       <div className="d-flex justify-content-between py-3 mb-5">
                         <div className="d-flex align-items-center">
-                          <p className="mb-0 me-3">Please rate:</p>
-                          <div className="d-flex align-items-center" style={{ fontSize: 12 }}>
-                            <i className="fa fa-star text-muted" />
-                            <i className="fa fa-star" />
-                            <i className="fa fa-star" />
-                            <i className="fa fa-star" />
-                            <i className="fa fa-star" />
-                          </div>
+
+                          <Stack spacing={1}>
+                            <Rating name="ratting"
+                              defaultValue={0}
+                              precision={1}
+                              value={values.ratting}
+                              onChange={handleChange}
+                            />
+                            {touched.ratting && errors.ratting ? errors.ratting : ""}
+                          </Stack>
                         </div>
                         <input type='submit' />
                       </div>
                     </div>
                   </div>
                 </form>
+                <div>
+                  {
+                    fdata.map((v) => (
+                      <div style={{ border: "1px solid gray", textAlign: "center", width: "200px", borderRadius: "10px", margin: "0 auto", marginBottom: "10px" }}>
+                        <h6>Name:  {v.name}</h6>
+                        <h6>Review:  {v.review}</h6>
+                        <h6>Status:  {v.status}</h6>
+                        <h6>Ratting:
+
+
+                          <Stack spacing={1}>
+                            <Rating
+                              name="ratting"
+                              defaultValue={0}
+                              precision={1}
+                              value={v.ratting}
+                            />
+
+                          </Stack>
+                        </h6>
+
+                      </div>
+                    ))
+                  }
+
+                </div>
               </div>
             </div>
             <div className="col-lg-4 col-xl-3">

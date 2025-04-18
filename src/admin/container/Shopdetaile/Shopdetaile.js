@@ -3,7 +3,7 @@ import { Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, 
 import { DataGrid } from '@mui/x-data-grid';
 import { useFormik, validateYupSchema } from 'formik';
 import React, { useEffect, useState } from 'react';
-import { object, string } from 'yup';
+import { number, object, string } from 'yup';
 import EditIcon from '@mui/icons-material/Edit';
 import FormControl from '@mui/material/FormControl';
 import { useDispatch, useSelector } from 'react-redux';
@@ -48,7 +48,8 @@ function Shopdetaile(props) {
         name: string().required(),
         email: string().required().email(),
         review: string().required(),
-        status: string().required()
+        status: string().required(),
+        ratting: number()
     })
     const formicksdata = useFormik({
         initialValues: {
@@ -56,7 +57,8 @@ function Shopdetaile(props) {
             name: '',
             email: '',
             review: '',
-            status: ''
+            status: '',
+            ratting:''
         },
         validateSchema: Shopdatetaileschema,
         onSubmit: (values, { resetForm }) => {
@@ -79,12 +81,12 @@ function Shopdetaile(props) {
         setUpdte(true)
     }
     const columns = [
-        { field: "id", headerName: "reviewId", width: 130,
+        { field: "id", headerName: "Product", width: 130,
              renderCell: (params) => {
                 console.log(params.row.pid, productData?.product);
                 const pData = productData?.product?.find(v => v.id === params.row.pid)
                 console.log(pData.pname);
-                return pData?.pname
+                return pData?.pname 
 
             }
          },
@@ -92,6 +94,8 @@ function Shopdetaile(props) {
         { field: "email", headerName: "email", width: 130 },
         { field: "review", headerName: "review", width: 130 },
         { field: "status", headerName: "status", width: 130 },
+        { field: "ratting", headerName: "ratting", width: 130 },
+
         {
             headerName: "Action",
             renderCell: (params) => (
