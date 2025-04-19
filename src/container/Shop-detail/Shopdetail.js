@@ -66,11 +66,23 @@ function Shopdetail(props) {
   });
 
 
-
-
   const fdata = shopdetData?.shopdet.filter((v => v.pid == x && v.status == "Approved"))
   console.log(fdata);
 
+  const rate = fdata.map((v) =>parseInt(v.ratting))
+  console.log(rate);
+
+  const total = rate.reduce((acc,v) => acc + v,  0);
+  console.log(total);
+
+  const finalData = total / rate.length;
+  console.log(finalData);
+  
+  
+  
+ 
+  
+  
 
 
   const { handleSubmit, handleChange, handleBlur, values, errors, touched, resetForm } = formicksdata
@@ -101,19 +113,20 @@ function Shopdetail(props) {
                 </div>
                 <>
                   {
-
                     <div className="col-lg-6">
                       <h4 className="fw-bold mb-3">{obj?.pname}</h4>
-                      <p className="mb-3">Category: {catData?.category?.find((v1) => v1.id === obj.Category)?.Category}</p>
+                      <p className="mb-3">Category: {catData?.category?.find((v1) => v1.id === obj?.Category)?.Category}</p>
                       <h5 className="fw-bold mb-3">{obj?.price} $</h5>
                       <div className="d-flex mb-4">
                         <Stack spacing={1}>
-                          <Rating name="ratting"
+                          <Rating
+                            name="ratting"
                             defaultValue={0}
                             precision={0.5}
-                            value={values.ratting}
-                            onChange={handleChange}
+                            value={finalData}
+                            readOnly 
                           />
+                          <span>{finalData}</span>
                         </Stack>
                       </div>
                       <p className="mb-4">{obj?.pDescripition}</p>
