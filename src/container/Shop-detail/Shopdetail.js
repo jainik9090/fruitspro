@@ -5,8 +5,10 @@ import { useParams } from 'react-router-dom';
 import { number, object, string } from 'yup';
 import { productUser } from '../../admin/container/redux/slice/product.slice';
 import { addShopdet, getShopdet } from '../../admin/container/redux/slice/shopdet.slice';
-import { Rating } from '@mui/material';
+import { Grid, LinearProgress, linearProgressClasses, Rating, styled } from '@mui/material';
 import { Stack } from 'react-bootstrap';
+import { Padding } from '@mui/icons-material';
+
 
 
 
@@ -69,20 +71,71 @@ function Shopdetail(props) {
   const fdata = shopdetData?.shopdet.filter((v => v.pid == x && v.status == "Approved"))
   console.log(fdata);
 
-  const rate = fdata.map((v) =>parseInt(v.ratting))
+  const rate = fdata.map((v) => +(v.ratting))
   console.log(rate);
 
-  const total = rate.reduce((acc,v) => acc + v,  0);
+  const five = rate?.filter(v1 => v1 === 5);
+  console.log(five.length);
+
+  const four = rate?.filter(v1 => v1 === 4);
+  console.log(four.length);
+  
+  const three = rate?.filter(v1 => v1 === 3);
+  console.log(three.length);
+  
+  const two = rate?.filter(v1 => v1 === 2);
+  console.log(two.length);
+  
+  const one = rate?.filter(v1 => v1 === 1);
+  console.log(one.length);
+
+  const fiveD = five.length / rate.length * 100;
+  console.log(fiveD);
+    
+  const fourD = four.length / rate.length * 100;
+  console.log(fourD);
+
+  const threeD = three.length / rate.length * 100;
+  console.log(threeD);
+  
+  const twoD = two.length / rate.length * 100;
+  console.log(twoD);
+  
+  const oneD = one.length / rate.length * 100;
+  console.log(oneD);
+  
+
+  const total = rate.reduce((acc, v) => acc + v, 0);
   console.log(total);
 
   const finalData = total / rate.length;
   console.log(finalData);
-  
-  
-  
- 
-  
-  
+
+
+
+
+  const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
+    height: 20,
+    borderRadius: 9,
+    [`&.${linearProgressClasses.colorPrimary}`]: {
+      backgroundColor: theme.palette.grey[200],
+      ...theme.applyStyles('dark', {
+        backgroundColor: theme.palette.grey[800],
+      }),
+    },
+    [`& .${linearProgressClasses.bar}`]: {
+      borderRadius: 0,
+      backgroundColor: '#81C408',
+      ...theme.applyStyles('dark', {
+        backgroundColor: '#05f511',
+      }),
+    },
+  }));
+
+
+
+
+
 
 
   const { handleSubmit, handleChange, handleBlur, values, errors, touched, resetForm } = formicksdata
@@ -118,15 +171,16 @@ function Shopdetail(props) {
                       <p className="mb-3">Category: {catData?.category?.find((v1) => v1.id === obj?.Category)?.Category}</p>
                       <h5 className="fw-bold mb-3">{obj?.price} $</h5>
                       <div className="d-flex mb-4">
-                        <Stack spacing={1}>
+                        <Stack spacing={1} style={{ display: "flex", alignItems: "center" }}>
+                          <span style={{ fontSize: "20px" }}>{finalData}</span>
                           <Rating
                             name="ratting"
                             defaultValue={0}
                             precision={0.5}
                             value={finalData}
-                            readOnly 
+                            readOnly
                           />
-                          <span>{finalData}</span>
+                          <span style={{ fontSize: "18px" }}>(Rating:{rate.length})</span>
                         </Stack>
                       </div>
                       <p className="mb-4">{obj?.pDescripition}</p>
@@ -319,16 +373,56 @@ function Shopdetail(props) {
                               precision={1}
                               value={values.ratting}
                               onChange={handleChange}
+
                             />
                             {touched.ratting && errors.ratting ? errors.ratting : ""}
                           </Stack>
+
+
                         </div>
                         <input type='submit' />
                       </div>
                     </div>
                   </div>
                 </form>
-                <div>
+              <div style={{width:"300px"}}>
+              <Stack spacing={2} sx={{ flexGrow: 1}} style={{alignItems:"center",display: "ruby"}}>
+                  <br />
+  
+                  <BorderLinearProgress 
+                  style={{width:"200px"}} 
+                  variant="determinate" 
+                  value={fiveD} />
+                  <h6 style={{display:"ruby",textAlign:"end"}}>{fiveD}%</h6>
+                  <br></br>
+                  <BorderLinearProgress 
+                  style={{width:"200px"}} 
+                  variant="determinate" 
+                  value={fourD} />
+                   <h6 style={{display:"ruby" ,textAlign:"end"}}>{fourD}%</h6>
+                  <br></br>
+                  <BorderLinearProgress 
+                  style={{width:"200px"}} 
+                  variant="determinate" 
+                  value={threeD} />
+                   <h6 style={{display:"ruby" ,textAlign:"end"}}>{threeD}%</h6>
+                  <br></br>
+                  <BorderLinearProgress 
+                  style={{width:"200px"}} 
+                  variant="determinate" 
+                  value={twoD} />
+                   <h6 style={{display:"ruby" ,textAlign:"end"}}>{twoD}%</h6>
+                  <br></br>
+                  <BorderLinearProgress 
+                  style={{width:"200px"}} 
+                  variant="determinate" 
+                  value={oneD} />
+                   <h6 style={{display:"ruby" ,textAlign:"end"}}>{oneD}%</h6>
+                  <br></br>
+
+                </Stack>
+              </div>
+                <div style={{display:"flex"}}>
                   {
                     fdata.map((v) => (
                       <div style={{ border: "1px solid gray", textAlign: "center", width: "200px", borderRadius: "10px", margin: "0 auto", marginBottom: "10px" }}>
@@ -344,6 +438,8 @@ function Shopdetail(props) {
                               defaultValue={0}
                               precision={1}
                               value={v.ratting}
+                              readOnly
+
                             />
 
                           </Stack>
