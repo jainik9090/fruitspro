@@ -8,6 +8,7 @@ import { addShopdet, getShopdet } from '../../admin/container/redux/slice/shopde
 import { Grid, LinearProgress, linearProgressClasses, Rating, styled } from '@mui/material';
 import { Stack } from 'react-bootstrap';
 import { Padding } from '@mui/icons-material';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
 
 
@@ -37,6 +38,7 @@ function Shopdetail(props) {
   const Shopdetschema = object({
     name: string().required(),
     email: string().required().email(),
+    header: string().required(),
     review: string().required(),
     ratting: number(),
   })
@@ -45,6 +47,7 @@ function Shopdetail(props) {
     initialValues: {
       name: '',
       email: '',
+      header:'',
       review: '',
       ratting: '',
     },
@@ -79,31 +82,31 @@ function Shopdetail(props) {
 
   const four = rate?.filter(v1 => v1 === 4);
   console.log(four.length);
-  
+
   const three = rate?.filter(v1 => v1 === 3);
   console.log(three.length);
-  
+
   const two = rate?.filter(v1 => v1 === 2);
   console.log(two.length);
-  
+
   const one = rate?.filter(v1 => v1 === 1);
   console.log(one.length);
 
   const fiveD = five.length / rate.length * 100;
   console.log(fiveD);
-    
+
   const fourD = four.length / rate.length * 100;
   console.log(fourD);
 
   const threeD = three.length / rate.length * 100;
   console.log(threeD);
-  
+
   const twoD = two.length / rate.length * 100;
   console.log(twoD);
-  
+
   const oneD = one.length / rate.length * 100;
   console.log(oneD);
-  
+
 
   const total = rate.reduce((acc, v) => acc + v, 0);
   console.log(total);
@@ -348,6 +351,22 @@ function Shopdetail(props) {
                       {touched.email && errors.email ? errors.email : ""}
                     </div>
                     <div className="col-lg-12">
+                      <div className="border-bottom rounded">
+                        <input
+                          type="header"
+                          name='header'
+                          label='header'
+                          className="form-control border-0"
+                          placeholder="Your header *"
+                          value={values.header}
+                          onChange={handleChange}
+                          onBlur={handleBlur}
+                          error={touched.header && errors.header}
+                        />
+                      </div>
+                      {touched.header && errors.header ? errors.header : ""}
+                    </div>
+                    <div className="col-lg-12">
                       <div className="border-bottom rounded my-4">
                         <textarea
                           name='review'
@@ -363,6 +382,7 @@ function Shopdetail(props) {
                       </div>
                       {touched.review && errors.review ? errors.review : ""}
                     </div>
+
                     <div className="col-lg-12">
                       <div className="d-flex justify-content-between py-3 mb-5">
                         <div className="d-flex align-items-center">
@@ -385,69 +405,75 @@ function Shopdetail(props) {
                     </div>
                   </div>
                 </form>
-              <div style={{width:"300px"}}>
-              <Stack spacing={2} sx={{ flexGrow: 1}} style={{alignItems:"center",display: "ruby"}}>
-                  <br />
-  
-                  <BorderLinearProgress 
-                  style={{width:"200px"}} 
-                  variant="determinate" 
-                  value={fiveD} />
-                  <h6 style={{display:"ruby",textAlign:"end"}}>{fiveD}%</h6>
-                  <br></br>
-                  <BorderLinearProgress 
-                  style={{width:"200px"}} 
-                  variant="determinate" 
-                  value={fourD} />
-                   <h6 style={{display:"ruby" ,textAlign:"end"}}>{fourD}%</h6>
-                  <br></br>
-                  <BorderLinearProgress 
-                  style={{width:"200px"}} 
-                  variant="determinate" 
-                  value={threeD} />
-                   <h6 style={{display:"ruby" ,textAlign:"end"}}>{threeD}%</h6>
-                  <br></br>
-                  <BorderLinearProgress 
-                  style={{width:"200px"}} 
-                  variant="determinate" 
-                  value={twoD} />
-                   <h6 style={{display:"ruby" ,textAlign:"end"}}>{twoD}%</h6>
-                  <br></br>
-                  <BorderLinearProgress 
-                  style={{width:"200px"}} 
-                  variant="determinate" 
-                  value={oneD} />
-                   <h6 style={{display:"ruby" ,textAlign:"end"}}>{oneD}%</h6>
-                  <br></br>
+                <div style={{ width: "", display:"flex"}}>
+                  <Stack spacing={3} sx={{ flexGrow: 1 }} style={{ alignItems: "center", display: "ruby"}}>
+                    <br />
+                   
+                    <BorderLinearProgress
+                      style={{ width: "200px" }}
+                      variant="determinate"
+                      value={fiveD} />
+                    <h6 style={{ display: "ruby", textAlign: "end" }}>{fiveD}%</h6>
+                    <br></br>
+                    
+                    <BorderLinearProgress
+                      style={{ width: "200px" }}
+                      variant="determinate"
+                      value={fourD} />
+                    <h6 style={{ display: "ruby", textAlign: "end" }}>{fourD}%</h6>
+                    <br></br>
+                  
+                    <BorderLinearProgress
+                      style={{ width: "200px" }}
+                      variant="determinate"
+                      value={threeD} />
+                    <h6 style={{ display: "ruby", textAlign: "end" }}>{threeD}%</h6>
+                    <br></br>
+                 
+                    <BorderLinearProgress
+                      style={{ width: "200px" }}
+                      variant="determinate"
+                      value={twoD} />
+                    <h6 style={{ display: "ruby", textAlign: "end" }}>{twoD}%</h6>
+                    <br></br>
+                    
+                    <BorderLinearProgress
+                      style={{ width: "200px" }}
+                      variant="determinate"
+                      value={oneD} />
+                    <h6 style={{ display: "ruby", textAlign: "end" }}>{oneD}%</h6>
+                    <br></br>
 
-                </Stack>
-              </div>
-                <div style={{display:"flex"}}>
-                  {
-                    fdata.map((v) => (
-                      <div style={{ border: "1px solid gray", textAlign: "center", width: "200px", borderRadius: "10px", margin: "0 auto", marginBottom: "10px" }}>
-                        <h6>Name:  {v.name}</h6>
-                        <h6>Review:  {v.review}</h6>
-                        <h6>Status:  {v.status}</h6>
-                        <h6>Ratting:
+                  </Stack>
 
+                  <div style={{ marginBottom: "10px", marginLeft:"50px", marginTop:"-15px"}}>
+                    {
+                      fdata.map((v) => (
+                        <div style={{ marginBottom: "20px", marginTop: "20px" }}>
+                          <h6 style={{ margin: "0" }}><AccountCircleIcon /> {v.name}</h6>
 
-                          <Stack spacing={1}>
+                          <Stack spacing={1} style={{ display: "flex", alignItems: "center", marginTop: "0" }}>
                             <Rating
                               name="ratting"
                               defaultValue={0}
                               precision={1}
                               value={v.ratting}
                               readOnly
-
                             />
-
+                            <h6>{v.header}</h6>
                           </Stack>
-                        </h6>
+                          <p style={{ marginLeft: "5px" }}>{v.review}</p>
 
-                      </div>
-                    ))
-                  }
+
+
+
+
+
+                        </div>
+                      ))
+                    }
+
+                  </div>
 
                 </div>
               </div>

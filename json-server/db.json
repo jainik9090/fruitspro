@@ -45,49 +45,24 @@
   ],
   "Review": [
     {
-      "id": "6156",
-      "name": "jainik",
-      "email": "jainik@gmail.com",
-      "review": "dsgdfg",
-      "ratting": "3",
-      "pid": "cfe5",
-      "status": "Approved"
-    },
-    {
-      "id": "69b6",
-      "name": "maulik",
-      "email": "maulik@gmail.com",
-      "review": "sdfd",
-      "ratting": "4",
-      "pid": "cfe5",
-      "status": "Approved"
-    },
-    {
-      "id": "86fa",
-      "name": "jainik",
-      "email": "jainik@gmail.com",
-      "review": "dfshfgj",
+      "id": "3193",
+      "name": "Maulik Rathod",
+      "email": "maulikrothod@gmail.com",
+      "header": "Very Good Product",
+      "review": "Value for money is something that we don't associate with brands like Daikin but definetly it is worth every rupee. The AC was delivered by amazon at the pre appointed time. The delivery agent was very courteous and helful. The installation also happened on the very same day as Daikin is very prompt.",
       "ratting": "5",
       "pid": "cfe5",
       "status": "Approved"
     },
     {
-      "id": "f8a8",
-      "name": "maulik",
-      "email": "maulik@gmail.com",
-      "review": "vfvrbgbth",
-      "ratting": "2",
-      "pid": "cfe5",
-      "status": "Approved"
-    },
-    {
-      "id": "275b",
+      "id": "8c87",
       "name": "jainik korat",
       "email": "jainik@gmail.com",
-      "review": "dsfvdv",
+      "header": "Very Good Product",
+      "review": "Value for money is something that we don't associate with brands like Daikin but definetly it is worth every rupee. The AC was delivered by amazon at the pre appointed time. The delivery agent was very courteous and helful. The installation also happened on the very same day as Daikin is very prompt.",
       "ratting": "5",
       "pid": "cfe5",
       "status": "Approved"
-    }
+    } 
   ]
 }

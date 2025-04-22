@@ -48,6 +48,7 @@ function Shopdetaile(props) {
         name: string().required(),
         email: string().required().email(),
         review: string().required(),
+        header: string().required(),
         status: string().required(),
         ratting: number()
     })
@@ -57,6 +58,7 @@ function Shopdetaile(props) {
             name: '',
             email: '',
             review: '',
+            header:'',
             status: '',
             ratting:''
         },
@@ -93,6 +95,7 @@ function Shopdetaile(props) {
         { field: "name", headerName: "name", width: 130 },
         { field: "email", headerName: "email", width: 130 },
         { field: "review", headerName: "review", width: 130 },
+        { field: "header", headerName: "header", width: 130 },
         { field: "status", headerName: "status", width: 130 },
         { field: "ratting", headerName: "ratting", width: 130 },
 
