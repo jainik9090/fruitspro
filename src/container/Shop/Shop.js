@@ -1,23 +1,33 @@
 import React, { useEffect, useState } from "react";
-import { NavLink, useParams } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import CircularProgress from '@mui/material/CircularProgress';
 import Slider from '@mui/material/Slider';
 import { useDispatch, useSelector } from "react-redux";
 import { productUser } from "../../admin/container/redux/slice/product.slice";
 import { getCategory } from "../../admin/container/redux/slice/category.slice";
 
-function Shop(props) {
+function Shop() {
   const [products, setProducts] = useState([]);
   const [search, setSearch] = useState('');
   const [sort, setSort] = useState('');
   const [selectedcat, setSelectedcat] = useState('');
   const [price, setPrice] = useState(0);
+  const [page, setPage] = useState(1);
   const dispatch = useDispatch();
   const productData = useSelector(state => state.product)
   const categoryData = useSelector(state => state.category)
 
 
-  
+
+
+  // const fetchProduct = async () => {
+  //   const responce = await fetch("http://localhost:4000/Product");
+  //   const data = await responce.json();
+
+  //   if (data && data.productData?.product) {
+  //     setProducts(data.productData?.product);
+  //   }
+  // }
 
 
 
@@ -45,8 +55,9 @@ function Shop(props) {
 
   useEffect(() => {
     getData();
-
+    // fetchProduct();
   }, [])
+
 
   const handleFilter = () => {
     const fdata = productData?.product.filter((v) =>
@@ -66,8 +77,8 @@ function Shop(props) {
         return b.price - a.price
       }
 
-   
-      
+
+
 
     })
 
@@ -89,6 +100,14 @@ function Shop(props) {
   const Finaldata = handleFilter();
 
   console.log(productData?.product);
+
+  const selectedpage = (selpage) => {
+    if (selpage >= 1 &&
+      selpage <= productData?.product.length &&
+      selpage !== page)
+
+      setPage(selpage);
+  }
 
 
   return (
@@ -387,10 +406,13 @@ function Shop(props) {
                   </div>
                   <div className="col-lg-9">
                     <div className="row g-4 justify-content-center">
+
                       {
-                        Finaldata.map((v) => (
+                        Finaldata?.slice(page * 2 - 2, page * 2).map((v) => (
+
                           <div className="col-md-6 col-lg-6 col-xl-4">
-                            <NavLink to={'/shopdetail/'+ v.id}>
+
+                            <NavLink to={'/shopdetail/' + v.id}>
                               <div className="rounded position-relative fruite-item">
                                 <div className="fruite-img">
                                   <img
@@ -434,16 +456,19 @@ function Shop(props) {
 
                       <div className="col-12">
                         <div className="pagination d-flex justify-content-center mt-5">
-                          <a href="#" className="rounded">
-                            «
-                          </a>
-                          <a href="#" className="active rounded">
-                            1
-                          </a>
-
-                          <a href="#" className="rounded">
-                            »
-                          </a>
+                          {
+                           Finaldata?.length > 0 && (
+                              <div style={{ padding: "10px", margin: "15px 0", display: "flex", justifyContent: "space-between" }}>
+                                <span className={page > 1 ? "" : "page_disable"} style={{ padding: "15px 20px", border: "1px solid gray", cursor: "pointer", fontWeight: "500" }} onClick={() => selectedpage(page - 1)}>Prew</span>
+                                {
+                                  [...Array(Finaldata?.length / 2)].map((_, i) => {
+                                    return <span className={page === i + 1 ? "page_selected" : ""} style={{ padding: "15px 20px", border: "1px solid gray", cursor: "pointer", fontWeight: "500" }} onClick={() => selectedpage(i + 1)} key={i}>{i + 1}</span>
+                                  })
+                                }
+                                <span className={page < productData?.product?.length / 2 ? "" : "page_disable"} style={{ padding: "15px 20px", border: "1px solid gray", cursor: "pointer", fontWeight: "500" }} onClick={() => selectedpage(page + 1)}>Next</span>
+                              </div>
+                            )
+                          }
                         </div>
                       </div>
                     </div>

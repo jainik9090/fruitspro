@@ -498,3 +498,9 @@
 .errors {
     color: brown;
 }
+.page_selected {
+    background-color: rgb(220, 220, 220);
+}
+.page_disable {
+    opacity: 0;
+}

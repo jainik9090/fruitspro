@@ -16,9 +16,12 @@ import AdminRoutes from './Routes/AdminRoutes';
 import Counter from './admin/container/counter/Counter';
 import { Provider } from 'react-redux';
 import { store } from './admin/container/redux/slice/store';
+import Jocks from './container/project/Jocks';
 
 function App() {
   return (
+
+    // <Jocks />
     <Provider store={store}>
        <Routes>
                 <Route path='/*' element={<UserRoutes />}/>    
